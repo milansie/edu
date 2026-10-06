@@ -23,6 +23,14 @@ Specifikace: [zadani.md](zadani.md).
 - [ ] Chybná slova per profil a jejich preference v kole
 - [ ] Pamatování posledního nastavení
 
+## Matematika — zlomky
+
+- [x] Zobecnění setupu/kola pro předmět bez směrů a s generovanými příklady
+- [x] Zlomková aritmetika + generátory 7 kategorií + testy
+- [x] Hra „Zápis" (vykreslení zlomků, klávesnice na obrazovce, vyhodnocení s hláškami, postup po chybě)
+- [x] Vzor a pravidlo u jedné kategorie
+- [ ] Později: sčítání, odčítání, násobení, dělení zlomků
+
 ## Fáze 3 — nasazení
 
 - [x] `_headers` (CSP a security hlavičky)
@@ -32,5 +40,5 @@ Specifikace: [zadani.md](zadani.md).
 
 ## Nápady na později
 
-- Matematika jako druhý předmět (generované příklady)
+- Zlomky: obrázek koláče u porovnávání/krácení, časová výzva, „najdi chybu"
 - Další jazyky

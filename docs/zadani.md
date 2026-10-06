@@ -20,7 +20,7 @@ Statický web na procvičování učiva pro 12letého uživatele. První předm�
 
 - **Společný základ**: obrazovky (profil → předmět → nastavení kola → hra → výsledek), vzhled, sdílené komponenty.
 - **Předmět = modul** v `subjects/<id>/`. Dodává kategorie a otázky a deklaruje, které typy her podporuje. Registrace na jednom místě (`js/registry.js`).
-- **Typ hry = modul** v `js/games/`. Pracuje s obecnou otázkou (zadání → seznam přijatelných odpovědí), ne se „slovíčkem". Matematika bude otázky generovat místo čtení ze souboru — rozhraní to nesmí znemožnit, ale pro matematiku se teď nic nestaví.
+- **Typ hry = modul** v `js/games/`. Pracuje s obecnou otázkou (zadání → seznam přijatelných odpovědí), ne se „slovíčkem". Matematika otázky generuje místo čtení ze souboru (viz sekce Matematika — zlomky).
 - **Design tokeny** v `css/tokens.css` — jediné místo pro barvy, fonty, rozměry, stíny.
 - Čistá logika (normalizace a porovnání odpovědí, Levenshtein, sestavení kola, výběr distraktorů, parser dat) je oddělená od DOM a pokrytá testy.
 
@@ -43,6 +43,31 @@ get a good grade = dostat dobrou známku
 - `index.json`: pole `{ id, file, title, group }`; `group` (např. „Unit 6") seskupuje kategorie ve výběru, aby šly přidávat další kapitoly.
 - Přidání lekce = nový `.txt` + řádek v `index.json`, žádná změna kódu.
 - Seed data dodá uživatel; pro vývoj 2–3 ukázkové kategorie po 6–10 slovech.
+
+## Matematika — zlomky
+
+Příklady se generují při každém kole znovu. Typy převzaté z pracovního listu (6. ročník), každý typ = jedna kategorie ve skupině „Zlomky":
+
+| Kategorie | Zadání | Odpověď |
+|---|---|---|
+| Krácení | 12/42 = ? | zlomek v základním tvaru, nebo celé číslo |
+| Na smíšené číslo | 17/5 = ? | smíšené číslo |
+| Smíšené číslo na zlomek | 5 1/5 = ? | zlomek |
+| Rozšiřování | 3/4 (· 4) = ? | zlomek |
+| Porovnávání | 3/7 ? 5/7 (stejný jmenovatel nebo stejný čitatel) | `<` / `>` |
+| Část z celku | 3/5 z 120 = ? | celé číslo |
+| Na desetinné číslo | 3/4 = ? | desetinné číslo (uznává se `,` i `.`) |
+
+Připravené rozšíření: sčítání, odčítání, násobení a dělení zlomků (odpověď zlomek / smíšené číslo).
+
+- **Generátory** hlídají „hezká" čísla jako v pracovním listu: jmenovatele zhruba do 12–16, část z celku vychází celá, u desetinných jen jmenovatele s konečným rozvojem (2, 4, 5, 8, 10, 20, 25, 50, 100). Každý generátor vrací zadání, správnou odpověď a postup řešení.
+- **Výběr**: konkrétní kategorie, nebo „Náhodně" (všechny kategorie promíchané). Směr se u matematiky nevolí.
+- **Délka kola**: výchozí 10 příkladů, volitelně 20.
+- **Hra „Zápis"**: zlomky se vykreslují pod sebou (čitatel / čára / jmenovatel). Vstup přes vlastní klávesnici na obrazovce (0–9, `,`, ⌫, potvrdit) do políček podle typu odpovědi (celá část / čitatel / jmenovatel / číslo); u porovnávání dvě velká tlačítka `<` a `>`. Na desktopu funguje i fyzická klávesnice.
+- **Vyhodnocení**: hodnota se porovnává matematicky, ne textově. Správná hodnota v nezkráceném tvaru, kde se chce základní tvar → neuznává se, hláška „Správně, ale ještě zkrať". Celé číslo zapsané jako zlomek (3/1) → neuznává se, hláška „Zapiš jako celé číslo". Smíšené číslo musí mít zlomkovou část menší než 1.
+- **Nápověda**: při procvičování jedné kategorie je nahoře vzor a pravidlo (z pracovního listu). V režimu „Náhodně" nápověda není.
+- **Po chybě** se ukáže správná odpověď i postup (např. `120 : 5 = 24, 24 · 3 = 72`). Postup je i ve výsledku kola u chybných příkladů.
+- Obtížnost zatím jedna úroveň.
 
 ## Nastavení kola
 
