@@ -1,0 +1,32 @@
+# 6D Grammar, 6E Listening and Vocabulary, 6F Speaking, 6G Writing (učebnice str. 85)
+# Překlady doplněné (kromě perform) — v sešitě chybí.
+camera = kamera | fotoaparát
+direct = režírovat
+perform = účinkovat | vystupovat
+school play = školní představení | školní divadlo
+screen = plátno | obrazovka
+be unsuccessful = být neúspěšný | neuspět
+get a call = dostat hovor | dostat telefonát
+get a fine = dostat pokutu
+get a good grade = dostat dobrou známku
+get bored = začít se nudit | znudit se
+get angry = rozzlobit se | naštvat se
+get dark = setmít se | stmívat se
+get home = dostat se domů | dorazit domů
+get to school = dostat se do školy | dorazit do školy
+get worse = zhoršit se
+graffiti artist = graffiti umělec | sprejer
+mask = maska
+modern art = moderní umění
+spray paint = barva ve spreji | sprej
+street art = pouliční umění
+tagging = tagování | sprejování podpisů
+check your diary = podívat se do diáře | podívat se do kalendáře
+go to an exhibition = jít na výstavu
+watch a series = sledovat seriál
+acting = herectví | hraní
+be set in = odehrávat se v
+beginning = začátek
+incredible = neuvěřitelný
+recommend = doporučit
+win an Oscar = získat Oscara | vyhrát Oscara
