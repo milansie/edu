@@ -1,0 +1,293 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  color: var(--color-ink);
+  background-color: var(--color-bg);
+  background-image: conic-gradient(
+    var(--color-bg-alt) 25%,
+    transparent 0 50%,
+    var(--color-bg-alt) 0 75%,
+    transparent 0
+  );
+  background-size: var(--pixel-size) var(--pixel-size);
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.noscript {
+  margin: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-panel);
+  border: var(--border-w) solid var(--color-ink);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Header */
+.app-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-2);
+}
+
+.app-title {
+  flex: 1;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: var(--text-lg);
+  letter-spacing: var(--letter-display);
+  text-transform: uppercase;
+  color: var(--color-white);
+  text-shadow: var(--shadow-text);
+}
+
+.progress {
+  flex-basis: 100%;
+  height: 18px;
+  background: var(--color-track);
+  border: var(--border-w) solid var(--color-ink);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: var(--color-gold);
+  box-shadow: inset 0 4px 0 var(--color-gold-light);
+  transition: width 0.25s ease;
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-2) var(--space-4) var(--space-4);
+  gap: var(--space-4);
+}
+
+/* Tlačítka: blokový vzhled s tvrdým stínem */
+.btn {
+  --btn-bg: var(--color-blue);
+  --btn-light: var(--color-blue-light);
+  --btn-edge: var(--color-blue-dark);
+  --btn-text: var(--color-white);
+  --btn-text-shadow: 0 2px 0 var(--color-ink);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--tap-min);
+  margin-bottom: var(--shadow-depth);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: var(--text-md);
+  letter-spacing: var(--letter-display);
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--btn-text);
+  text-shadow: var(--btn-text-shadow);
+  background: var(--btn-bg);
+  border: var(--border-w) solid var(--color-ink);
+  border-radius: var(--radius);
+  box-shadow:
+    0 var(--shadow-depth) 0 var(--color-ink),
+    inset 0 4px 0 var(--btn-light),
+    inset 0 -4px 0 var(--btn-edge);
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  transition: transform 0.05s ease;
+}
+
+.btn:active:not(:disabled) {
+  --shadow-depth: 2px;
+  transform: translateY(4px);
+}
+
+.btn:disabled {
+  filter: grayscale(1);
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-green {
+  --btn-bg: var(--color-green);
+  --btn-light: var(--color-green-light);
+  --btn-edge: var(--color-green-dark);
+}
+
+.btn-red {
+  --btn-bg: var(--color-red);
+  --btn-light: var(--color-red-light);
+  --btn-edge: var(--color-red-dark);
+}
+
+.btn-orange {
+  --btn-bg: var(--color-orange);
+  --btn-light: var(--color-orange-light);
+  --btn-edge: var(--color-orange-dark);
+}
+
+.btn-purple {
+  --btn-bg: var(--color-purple);
+  --btn-light: var(--color-purple-light);
+  --btn-edge: var(--color-purple-dark);
+}
+
+.btn-gold {
+  --btn-bg: var(--color-gold);
+  --btn-light: var(--color-gold-light);
+  --btn-edge: var(--color-gold-dark);
+  --btn-text: var(--color-ink);
+  --btn-text-shadow: none;
+}
+
+.btn-stone {
+  --btn-bg: var(--color-stone);
+  --btn-light: var(--color-stone-light);
+  --btn-edge: var(--color-stone-dark);
+  --btn-text: var(--color-ink);
+  --btn-text-shadow: none;
+}
+
+.btn-icon {
+  min-width: var(--tap-min);
+  padding: 0;
+  font-size: var(--text-lg);
+}
+
+/* Dlaždice výběru (kategorie, směr, hra, počet) */
+.tile.is-on {
+  --btn-bg: var(--color-green);
+  --btn-light: var(--color-green-light);
+  --btn-edge: var(--color-green-dark);
+  --btn-text: var(--color-white);
+  --btn-text-shadow: 0 2px 0 var(--color-ink);
+}
+
+.tile-icon {
+  font-size: var(--text-xl);
+  line-height: 1;
+}
+
+.tile-stack {
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.tile-grid.cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.tile-grid .btn {
+  padding-inline: var(--space-2);
+}
+
+.section-title {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: var(--text-md);
+  letter-spacing: var(--letter-display);
+  text-transform: uppercase;
+  color: var(--color-white);
+  text-shadow: var(--shadow-text);
+}
+
+.section-subtitle {
+  margin: var(--space-3) 0 var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  text-shadow: 0 2px 0 var(--color-ink);
+}
+
+.scroll-area {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 var(--space-1) var(--space-3);
+}
+
+.screen-footer {
+  display: flex;
+  flex-direction: column;
+}
+
+.screen-footer .btn {
+  width: 100%;
+}
+
+/* Úvod a chyby */
+.hero {
+  margin: var(--space-5) 0 var(--space-2);
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: 3.5rem;
+  letter-spacing: var(--letter-display);
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  text-shadow: 0 5px 0 var(--color-ink), 0 0 0 var(--color-ink);
+}
+
+.hero-sub {
+  margin: 0 0 var(--space-4);
+  text-align: center;
+  font-weight: 800;
+  color: var(--color-white);
+  text-shadow: 0 2px 0 var(--color-ink);
+}
+
+.message-panel {
+  padding: var(--space-4);
+  background: var(--color-panel);
+  border: var(--border-w) solid var(--color-ink);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  font-weight: 700;
+  text-align: center;
+}

@@ -1,0 +1,22 @@
+/**
+ * Jediné místo registrace předmětů a typů her.
+ * Předmět: `{ id, title, icon, load() → subject }`, kde subject má tvar
+ * `{ id, title, sides, games, loadCategories(), loadItems(categoryIds) }`.
+ * Hra: `{ id, title, icon, load() → { mount(container, round, options) → unmount } }`.
+ */
+export const subjects = [
+  {
+    id: 'en',
+    title: 'Angličtina',
+    icon: 'EN',
+    load: () => import('../subjects/en/subject.js').then((m) => m.subject),
+  },
+];
+
+export const games = [
+  { id: 'flashcards', title: 'Kartičky', icon: '🃏', load: () => import('./games/flashcards.js') },
+  { id: 'choice', title: 'Výběr ze 4', icon: '🎯', load: () => import('./games/choice.js') },
+];
+
+export const getSubject = (id) => subjects.find((s) => s.id === id);
+export const getGame = (id) => games.find((g) => g.id === id);

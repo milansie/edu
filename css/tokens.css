@@ -1,0 +1,64 @@
+/* Jediné místo pro barvy, fonty, rozměry a stíny. Ostatní CSS používá jen var(). */
+:root {
+  /* Pixelový font: přidej @font-face (soubor v assets/fonts/) a vlož jeho název na začátek --font-display. */
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --weight-display: 900;
+  --letter-display: 0.04em;
+
+  --color-ink: #14202b;
+  --color-white: #ffffff;
+  --color-panel: #f3ecd6;
+  --color-panel-edge: #cbbf98;
+
+  --color-bg: #2f9be0;
+  --color-bg-alt: #2a90d2;
+
+  --color-green: #4cc23a;
+  --color-green-light: #7be063;
+  --color-green-dark: #2c8a1e;
+  --color-red: #ff4b4b;
+  --color-red-light: #ff8080;
+  --color-red-dark: #b82020;
+  --color-orange: #ff9a1f;
+  --color-orange-light: #ffc061;
+  --color-orange-dark: #c46a00;
+  --color-purple: #8a4bff;
+  --color-purple-light: #b38aff;
+  --color-purple-dark: #5a2bc0;
+  --color-gold: #ffd21f;
+  --color-gold-light: #ffe670;
+  --color-gold-dark: #c79a00;
+  --color-blue: #2f6fe0;
+  --color-blue-light: #6b9bff;
+  --color-blue-dark: #1b3f9a;
+  --color-stone: #e6dfc8;
+  --color-stone-light: #fbf7e8;
+  --color-stone-dark: #b5a97f;
+  --color-track: #0b1722;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+
+  --text-sm: 0.875rem;
+  --text-md: 1.05rem;
+  --text-lg: 1.35rem;
+  --text-xl: 2rem;
+  --text-card: clamp(1.6rem, 7vw, 2.4rem);
+
+  --border-w: 4px;
+  --radius: 6px;
+  --shadow-depth: 6px;
+  --shadow-card: 0 8px 0 var(--color-ink);
+  --shadow-text: 0 3px 0 var(--color-ink);
+
+  --tap-min: 56px;
+  --max-width: 520px;
+  --pixel-size: 48px;
+
+  --flip-duration: 0.5s;
+  --focus-ring: 0 0 0 4px var(--color-white), 0 0 0 8px var(--color-ink);
+}
