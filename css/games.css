@@ -70,6 +70,7 @@
   font-weight: 900;
   letter-spacing: var(--letter-display);
   color: var(--color-ink);
+  text-shadow: none;
   background: var(--color-gold);
   border: 3px solid var(--color-ink);
   border-radius: var(--radius);
