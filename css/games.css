@@ -60,7 +60,6 @@
 .card-back {
   color: var(--color-white);
   background: var(--color-purple);
-  text-shadow: 0 3px 0 var(--color-ink);
   transform: rotateY(180deg);
 }
 
@@ -70,7 +69,6 @@
   font-weight: 900;
   letter-spacing: var(--letter-display);
   color: var(--color-ink);
-  text-shadow: none;
   background: var(--color-gold);
   border: 3px solid var(--color-ink);
   border-radius: var(--radius);
