@@ -2,6 +2,7 @@ import { h } from './ui/dom.js';
 import { subjects, getSubject, getGame } from './registry.js';
 import { createRound } from './core/round.js';
 import { render as renderSubjects } from './screens/subjects.js';
+import { render as renderTopics } from './screens/topics.js';
 import { render as renderSetup } from './screens/setup.js';
 import { render as renderResult } from './screens/result.js';
 
@@ -9,7 +10,7 @@ const DIRECTIONS = { ab: ['ab'], ba: ['ba'], both: ['ab', 'ba'] };
 
 const appEl = document.getElementById('app');
 const loadedSubjects = new Map();
-/** Stav sezení v paměti: nastavení per předmět, rozehrané kolo a jeho výsledek. */
+/** Stav sezení v paměti: nastavení per předmět a téma (klíč `předmět/téma`), rozehrané kolo a jeho výsledek. */
 const state = { settings: {}, play: null, result: null };
 let cleanup = null;
 let renderToken = 0;
@@ -29,8 +30,8 @@ function redirect(hash) {
 }
 
 function parseHash() {
-  const [subjectId = null, screen = 'setup'] = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
-  return { subjectId, screen };
+  const [subjectId = null, topicId = null, screen = 'setup'] = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
+  return { subjectId, topicId, screen };
 }
 
 /** Postaví rám obrazovky (header + obsah) a vrátí odkazy na jeho části. */
@@ -78,10 +79,11 @@ function hintFor(subject, settings) {
 }
 
 /** Sestaví kolo: generované příklady (matematika), nebo načtené položky vybraných kategorií, a přejde do hry. */
-async function startRound(subject, settings) {
+async function startRound(subject, topicId, settings) {
   if (subject.generate) {
     state.play = {
       subjectId: subject.id,
+      topicId,
       settings: { ...settings },
       pool: null,
       hint: hintFor(subject, settings),
@@ -91,7 +93,7 @@ async function startRound(subject, settings) {
       }),
     };
     state.result = null;
-    navigate(`#/${subject.id}/play`);
+    navigate(`#/${subject.id}/${topicId}/play`);
     return;
   }
   const [categories, selected] = await Promise.all([
@@ -101,24 +103,25 @@ async function startRound(subject, settings) {
   const all = await subject.loadItems(categories.map((c) => c.id));
   state.play = {
     subjectId: subject.id,
+    topicId,
     settings: { ...settings },
     pool: { selected, all },
     hint: null,
     round: createRound(selected, { directions: DIRECTIONS[settings.direction], limit: settings.limit }),
   };
   state.result = null;
-  navigate(`#/${subject.id}/play`);
+  navigate(`#/${subject.id}/${topicId}/play`);
 }
 
 function repeatWrong(subject) {
-  const { settings } = state.play;
-  const items = state.result.wrong.map((q) => q.item);
+  const { settings, topicId } = state.play;
+  const items = state.result.summary.wrong.map((q) => q.item);
   state.play.round = createRound(items, {
     directions: DIRECTIONS[settings.direction],
     makeQuestion: subject.makeQuestion,
   });
   state.result = null;
-  navigate(`#/${subject.id}/play`);
+  navigate(`#/${subject.id}/${topicId}/play`);
 }
 
 async function route() {
@@ -127,11 +130,11 @@ async function route() {
   cleanup = null;
 
   try {
-    const { subjectId, screen } = parseHash();
+    const { subjectId, topicId, screen } = parseHash();
 
     if (!subjectId) {
       const shell = buildShell({ title: 'edu', backHash: null });
-      renderSubjects(shell.screen, { subjects, onPick: (id) => navigate(`#/${id}/setup`) });
+      renderSubjects(shell.screen, { subjects, onPick: (id) => navigate(`#/${id}`) });
       return;
     }
     if (!getSubject(subjectId)?.load) {
@@ -141,11 +144,29 @@ async function route() {
 
     const subject = await loadSubject(subjectId);
     if (token !== renderToken) return;
-    const setupHash = `#/${subjectId}/setup`;
+    const topicsHash = `#/${subjectId}`;
+
+    if (!topicId) {
+      const [topics, categories] = await Promise.all([subject.loadTopics(), subject.loadCategories()]);
+      if (token !== renderToken) return;
+      const shell = buildShell({ title: subject.title, backHash: '#/' });
+      renderTopics(shell.screen, { topics, categories, onPick: (id) => navigate(`#/${subjectId}/${id}/setup`) });
+      return;
+    }
+
+    const topics = await subject.loadTopics();
+    if (token !== renderToken) return;
+    const topic = topics.find((t) => t.id === topicId);
+    if (!topic) {
+      redirect(topicsHash);
+      return;
+    }
+    const setupHash = `#/${subjectId}/${topicId}/setup`;
+    const hasResult = state.result?.subjectId === subjectId && state.result.topicId === topicId;
 
     if (screen === 'play') {
-      if (state.play?.subjectId !== subjectId || state.play.round.isDone()) {
-        redirect(state.result ? `#/${subjectId}/result` : setupHash);
+      if (state.play?.subjectId !== subjectId || state.play.topicId !== topicId || state.play.round.isDone()) {
+        redirect(hasResult ? `#/${subjectId}/${topicId}/result` : setupHash);
         return;
       }
       const game = await getGame(state.play.settings.gameId).load();
@@ -158,38 +179,39 @@ async function route() {
         hint,
         onProgress: shell.setProgress,
         onDone: () => {
-          state.result = round.summary();
-          navigate(`#/${subjectId}/result`);
+          state.result = { subjectId, topicId, summary: round.summary() };
+          navigate(`#/${subjectId}/${topicId}/result`);
         },
       });
       return;
     }
 
     if (screen === 'result') {
-      if (!state.result) {
+      if (!hasResult) {
         redirect(setupHash);
         return;
       }
       const shell = buildShell({ title: 'Výsledek', backHash: setupHash });
       renderResult(shell.screen, {
-        summary: state.result,
+        summary: state.result.summary,
         onRepeatWrong: () => repeatWrong(subject),
         onNewRound: () => navigate(setupHash),
       });
       return;
     }
 
-    const categories = await subject.loadCategories();
+    const categories = (await subject.loadCategories()).filter((c) => c.topic === topicId);
     if (token !== renderToken) return;
-    state.settings[subjectId] ??= defaultSettings(subject);
-    const settings = state.settings[subjectId];
-    const shell = buildShell({ title: subject.title, backHash: '#/' });
+    const settingsKey = `${subjectId}/${topicId}`;
+    state.settings[settingsKey] ??= defaultSettings(subject);
+    const settings = state.settings[settingsKey];
+    const shell = buildShell({ title: topic.title, backHash: topicsHash });
     renderSetup(shell.screen, {
       subject,
       categories,
       games: subject.games.map(getGame),
       settings,
-      onStart: () => startRound(subject, settings).catch(showError),
+      onStart: () => startRound(subject, topicId, settings).catch(showError),
     });
   } catch (error) {
     if (token === renderToken) showError(error);

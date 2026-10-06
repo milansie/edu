@@ -3,7 +3,7 @@ import { parseVocab } from './parse.js';
 
 const FILE_PATTERN = /^[\w.-]+\.txt$/;
 const itemCache = new Map();
-let categoriesPromise = null;
+let indexPromise = null;
 
 async function fetchText(relativePath) {
   const response = await fetch(new URL(relativePath, import.meta.url));
@@ -11,9 +11,23 @@ async function fetchText(relativePath) {
   return response;
 }
 
-function loadCategoryList() {
-  categoriesPromise ??= fetchText('./data/index.json').then((r) => r.json());
-  return categoriesPromise;
+/** Načte `data/index.json` jednou; kategorie odkazující na neexistující téma přeskočí s varováním. */
+function loadIndex() {
+  indexPromise ??= fetchText('./data/index.json')
+    .then((r) => r.json())
+    .then(({ topics = [], categories = [] }) => {
+      const topicIds = new Set(topics.map((t) => t.id));
+      const valid = categories.filter((c) => {
+        if (topicIds.has(c.topic)) return true;
+        console.warn(`Kategorie ${c.id}: neznámé téma "${c.topic}".`);
+        return false;
+      });
+      return { topics, categories: valid };
+    });
+  indexPromise.catch(() => {
+    indexPromise = null;
+  });
+  return indexPromise;
 }
 
 async function loadCategoryItems(category) {
@@ -39,15 +53,21 @@ export const subject = {
   sides: { a: 'EN', b: 'CZ' },
   games: ['flashcards', 'choice'],
 
-  /** Vrací `[{ id, title, group }]` podle `data/index.json`. */
+  /** Vrací `[{ id, title, subtitle? }]` podle `data/index.json`. */
+  async loadTopics() {
+    const { topics } = await loadIndex();
+    return topics.map(({ id, title, subtitle }) => ({ id, title, subtitle }));
+  },
+
+  /** Vrací `[{ id, title, topic }]` podle `data/index.json`. */
   async loadCategories() {
-    const list = await loadCategoryList();
-    return list.map(({ id, title, group }) => ({ id, title, group }));
+    const { categories } = await loadIndex();
+    return categories.map(({ id, title, topic }) => ({ id, title, topic }));
   },
 
   /** Vrací položky zadaných kategorií v pořadí `categoryIds`. */
   async loadItems(categoryIds) {
-    const list = await loadCategoryList();
+    const { categories: list } = await loadIndex();
     const chosen = categoryIds.map((id) => list.find((c) => c.id === id)).filter(Boolean);
     const perCategory = await Promise.all(chosen.map(loadCategoryItems));
     return perCategory.flat();

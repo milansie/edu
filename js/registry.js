@@ -1,7 +1,7 @@
 /**
  * Jediné místo registrace předmětů a typů her.
  * Předmět: `{ id, title, icon, load() → subject }`, kde subject má tvar
- * `{ id, title, sides, games, loadCategories(), loadItems(categoryIds) }`. Předmět s generovanými
+ * `{ id, title, sides, games, loadTopics(), loadCategories(), loadItems(categoryIds) }`. Předmět s generovanými
  * příklady místo `loadItems` nabízí `generate(categoryIds, count)` a `makeQuestion(item)`; volitelně
  * `hintFor(categoryId)`, `limits`, `defaultLimit`, `allLabel`; bez `sides` se nenabízí směr.
  * Předmět bez `load` je připravovaný: zobrazí se jako neaktivní dlaždice a nejde otevřít.

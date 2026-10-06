@@ -7,7 +7,7 @@ const DEFAULT_LIMITS = [
 ];
 
 /**
- * Nastavení kola. Předmět může volitelně dodat `limits` (počty otázek), `allLabel` (text dlaždice „Vše“)
+ * Nastavení kola pro kategorie jednoho tématu (`categories`). Předmět může volitelně dodat `limits` (počty otázek), `allLabel` (text dlaždice „Vše“)
  * a vynechat `sides` (pak se nenabízí směr). `settings` (`{ categoryIds, direction, gameId, limit }`) se mění přímo,
  * takže při návratu na obrazovku zůstane výběr zachován.
  */
@@ -50,13 +50,6 @@ export function render(container, { subject, categories, games, settings, onStar
     settings.categoryIds = allIds.filter((cid) => set.has(cid));
   };
 
-  const groups = new Map();
-  for (const category of categories) {
-    const key = category.group ?? '';
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key).push(category);
-  }
-
   const categorySection = h(
     'section',
     {},
@@ -68,20 +61,17 @@ export function render(container, { subject, categories, games, settings, onStar
         settings.categoryIds = allSelected() ? [] : [...allIds];
       }),
     ),
-    [...groups].map(([group, list]) => [
-      group ? h('h4', { class: 'section-subtitle' }, group) : null,
-      h(
-        'div',
-        { class: 'tile-grid' },
-        list.map((c) =>
-          tile(
-            c.title,
-            () => settings.categoryIds.includes(c.id),
-            () => toggleCategory(c.id),
-          ),
+    h(
+      'div',
+      { class: 'tile-grid' },
+      categories.map((c) =>
+        tile(
+          c.title,
+          () => settings.categoryIds.includes(c.id),
+          () => toggleCategory(c.id),
         ),
       ),
-    ]),
+    ),
   );
 
   const limits = subject.limits ? subject.limits.map((n) => ({ value: n, label: String(n) })) : DEFAULT_LIMITS;

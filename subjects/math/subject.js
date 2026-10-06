@@ -2,7 +2,8 @@ import { shuffle } from '../../js/core/rng.js';
 import { categories } from './fractions/index.js';
 import { plainText } from './fractions/helpers.js';
 
-const GROUP = 'Zlomky';
+const TOPIC = 'fractions';
+const TOPICS = [{ id: TOPIC, title: 'Zlomky' }];
 const DEFAULT_COUNT = 10;
 const MAX_DUPLICATE_RETRIES = 20;
 
@@ -20,9 +21,14 @@ export const subject = {
   defaultLimit: DEFAULT_COUNT,
   allLabel: 'Náhodně',
 
-  /** Vrací `[{ id, title, group }]` v pořadí pracovního listu. */
+  /** Vrací `[{ id, title, subtitle? }]` témat předmětu. */
+  async loadTopics() {
+    return TOPICS;
+  },
+
+  /** Vrací `[{ id, title, topic }]` v pořadí pracovního listu. */
   async loadCategories() {
-    return categories.map(({ id, title }) => ({ id, title, group: GROUP }));
+    return categories.map(({ id, title }) => ({ id, title, topic: TOPIC }));
   },
 
   /** Nápověda kategorie `{ rule, example }` (vzor jako `parts`) nebo null pro neznámé id. */
