@@ -3,6 +3,7 @@ import { makeItem, frac, mixed, text, randInt, coprimeBelow } from './helpers.js
 export default {
   id: 'from-mixed',
   title: 'Smíšené číslo na zlomek',
+  task: 'Převeď na zlomek',
   answerType: 'fraction',
   hint: {
     rule: 'Celou část vynásobíme jmenovatelem a přičteme čitatele (5 · 5 + 1 = 26); jmenovatel se nemění.',

@@ -3,6 +3,7 @@ import { makeItem, frac, mixed, text, randInt, coprimeBelow } from './helpers.js
 export default {
   id: 'to-mixed',
   title: 'Na smíšené číslo',
+  task: 'Převeď na smíšené číslo',
   answerType: 'mixed',
   hint: {
     rule: 'Čitatele vydělíme jmenovatelem: podíl je celá část, zbytek je čitatel zlomkové části.',

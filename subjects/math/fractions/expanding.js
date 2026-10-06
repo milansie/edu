@@ -3,6 +3,7 @@ import { makeItem, frac, text, randInt } from './helpers.js';
 export default {
   id: 'expanding',
   title: 'Rozšiřování',
+  task: 'Rozšiř zlomek číslem v závorce',
   answerType: 'fraction-exact',
   hint: {
     rule: 'Čitatele i jmenovatele vynásobíme stejným číslem – tím, které je v závorce.',

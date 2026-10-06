@@ -32,11 +32,12 @@ function wrongTextItem(q) {
   );
 }
 
-/** Chybný generovaný příklad: zadání, správná odpověď a postup řešení. */
+/** Chybný generovaný příklad: pokyn, zadání, správná odpověď a postup řešení. */
 function wrongMathItem(q) {
   return h(
     'li',
     { class: 'wrong-math' },
+    q.task ? h('span', { class: 'wrong-task' }, q.task) : null,
     h('span', { class: 'wrong-prompt' }, renderParts(q.display.prompt)),
     h('span', { class: 'wrong-answer' }, renderParts(q.display.answer)),
     h('ul', { class: 'steps' }, q.display.steps.map((step) => h('li', {}, step))),

@@ -63,6 +63,7 @@ export function mount(container, round, { hint, onDone, onProgress }) {
         'div',
         { class: 'game game-write' },
         hint ? buildHint() : null,
+        question.task ? h('p', { class: 'task' }, question.task) : null,
         h('div', { class: 'prompt-card', 'aria-label': question.prompt }, renderParts(question.display.prompt)),
         buildAnswerRow(),
         feedback,

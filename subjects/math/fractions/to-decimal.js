@@ -8,6 +8,7 @@ const IMPROPER_SHARE = 0.25;
 export default {
   id: 'to-decimal',
   title: 'Na desetinné číslo',
+  task: 'Převeď na desetinné číslo',
   answerType: 'decimal',
   hint: {
     rule: 'Čitatele vydělíme jmenovatelem, nebo zlomek rozšíříme na jmenovatele 10, 100, …',

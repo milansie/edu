@@ -377,6 +377,16 @@
   font-weight: 700;
 }
 
+/* Pokyn příkladu („Zkrať na základní tvar") — v režimu Náhodně jediná informace, co se počítá. */
+.task {
+  margin: 0;
+  text-align: center;
+  font-size: var(--text-lg);
+  font-weight: 900;
+  color: var(--color-white);
+  text-shadow: 0 2px 0 var(--color-ink);
+}
+
 .answer-row {
   display: flex;
   align-items: center;
@@ -504,6 +514,12 @@
 .wrong-math .steps {
   flex-basis: 100%;
   margin: 0;
+}
+
+.wrong-task {
+  flex-basis: 100%;
+  font-size: var(--text-sm);
+  font-weight: 700;
 }
 
 @media (prefers-reduced-motion: reduce) {

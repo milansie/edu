@@ -3,6 +3,7 @@ import { makeItem, frac, text, randInt } from './helpers.js';
 export default {
   id: 'of-whole',
   title: 'Část z celku',
+  task: 'Vypočítej část z celku',
   answerType: 'integer',
   hint: {
     rule: 'Celek vydělíme jmenovatelem a výsledek vynásobíme čitatelem.',

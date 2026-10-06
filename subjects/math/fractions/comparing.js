@@ -5,6 +5,7 @@ const MAX_DENOMINATOR = 16;
 export default {
   id: 'comparing',
   title: 'Porovnávání',
+  task: 'Doplň znaménko < nebo >',
   answerType: 'relation',
   hint: {
     rule: 'Stejný jmenovatel: větší je zlomek s větším čitatelem. Stejný čitatel: větší je zlomek s menším jmenovatelem.',

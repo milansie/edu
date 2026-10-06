@@ -48,10 +48,14 @@ export const subject = {
     });
   },
 
-  /** Převede vygenerovanou položku na otázku kola `{ item, prompt, answers, display, answerType, expected }`. */
+  /**
+   * Převede vygenerovanou položku na otázku kola
+   * `{ item, task, prompt, answers, display, answerType, expected }`; `task` je pokyn kategorie („Zkrať na základní tvar").
+   */
   makeQuestion(item) {
     return {
       item,
+      task: byId.get(item.category)?.task ?? '',
       prompt: plainText(item.display.prompt),
       answers: [plainText(item.display.answer)],
       display: item.display,

@@ -5,6 +5,7 @@ const INTEGER_SHARE = 0.2;
 export default {
   id: 'shortening',
   title: 'Krácení',
+  task: 'Zkrať na základní tvar',
   answerType: 'reduced',
   hint: {
     rule: 'Čitatele i jmenovatele vydělíme stejným číslem. Zkrať na základní tvar (výsledek může být i celé číslo).',
