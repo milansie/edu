@@ -8,6 +8,7 @@ Specifikace: [zadani.md](zadani.md).
 - [x] `css/tokens.css` a hravý vizuální styl (mobile-first)
 - [x] Předmět EN: parser textového formátu, `index.json`, ukázkové kategorie
 - [x] Nastavení kola (kategorie, směr, typ hry, počet otázek)
+- [x] Výběr tématu mezi předmětem a nastavením kola
 - [x] Kartičky
 - [x] Výběr ze 4 (distraktory, kontrola synonym)
 - [x] Výsledková obrazovka

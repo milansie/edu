@@ -40,8 +40,8 @@ get a good grade = dostat dobrou známku
 - Vícero přijatelných anglických tvarů lze stejně oddělit `|` vlevo.
 - Text v závorce je doplňující nápověda, např. `stage = fáze (jeviště, pódium)` — první tvar je překlad ze sešitu (ten vyžaduje učitel), závorka nabízí přesnější význam. Zobrazuje se celý; při psaní se závorka při porovnání ignoruje a stačí odpovědět „fáze".
 - Identita slova = kategorie + anglický text (normalizovaný). Pozor: přepsání anglického textu „zapomene" uložené chyby k tomu slovu — u ad-hoc testů přijatelné.
-- `index.json`: pole `{ id, file, title, group }`; `group` (např. „Unit 6") seskupuje kategorie ve výběru, aby šly přidávat další kapitoly.
-- Přidání lekce = nový `.txt` + řádek v `index.json`, žádná změna kódu.
+- `index.json`: objekt `{ topics, categories }`. `topics` = pole `{ id, title, subtitle? }` (např. `unit6`, „Unit 6", „Umění a film"); `categories` = pole `{ id, file, title, topic }`, kde `topic` je `id` existujícího tématu (kategorie s neznámým tématem se přeskočí s varováním v konzoli).
+- Přidání lekce = nový `.txt` + řádek v `categories` (případně nové téma v `topics`), žádná změna kódu.
 - Seed data dodá uživatel; pro vývoj 2–3 ukázkové kategorie po 6–10 slovech.
 
 ## Matematika — zlomky
@@ -71,7 +71,8 @@ Připravené rozšíření: sčítání, odčítání, násobení a dělení zlo
 
 ## Nastavení kola
 
-- **Kategorie**: jedna, více, nebo vše (ve skupinách podle `group`).
+- **Téma**: před nastavením kola se vybírá téma předmětu (obrazovka se ukazuje i při jediném tématu); nastavení nabízí jen kategorie zvoleného tématu.
+- **Kategorie**: jedna, více, nebo vše (v rámci zvoleného tématu).
 - **Směr**: EN→CZ, CZ→EN, oba (pak se směr losuje po otázkách).
 - **Typ hry**: kartičky, výběr ze 4, psaní, pexeso.
 - **Počet otázek**: defaultně celá výběrová sada, volitelně omezit (např. 10 / 20).
