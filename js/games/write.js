@@ -61,7 +61,7 @@ export function mount(container, round, { hint, onDone, onProgress }) {
     container.replaceChildren(
       h(
         'div',
-        { class: 'game' },
+        { class: 'game game-write' },
         hint ? buildHint() : null,
         h('div', { class: 'prompt-card', 'aria-label': question.prompt }, renderParts(question.display.prompt)),
         buildAnswerRow(),

@@ -339,6 +339,18 @@
   gap: var(--space-1);
 }
 
+/* Na nízkém displeji se Zápis raději posune, než aby se ořízla klávesnice. */
+.game-write {
+  overflow-y: auto;
+}
+
+/* V Zápisu se zadání nesmí smrštit pod výšku zlomku; místo navíc dostane klávesnice. */
+.game-write .prompt-card {
+  flex: 0 0 auto;
+  min-height: auto;
+  max-height: none;
+}
+
 .hint-card {
   display: flex;
   flex-wrap: wrap;
