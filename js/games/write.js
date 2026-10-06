@@ -34,7 +34,7 @@ export function mount(container, round, { hint, onDone, onProgress }) {
 
     slots = ANSWER_SLOTS[question.answerType] ?? [];
     values = Object.fromEntries(slots.map((s) => [s.key, '']));
-    active = slots[0]?.key ?? null;
+    active = (slots.find((s) => !s.optional) ?? slots[0])?.key ?? null;
     slotEls = new Map(
       slots.map((s) => [
         s.key,
@@ -94,6 +94,7 @@ export function mount(container, round, { hint, onDone, onProgress }) {
         content = [slot('v')];
         break;
       case 'mixed':
+      case 'value':
         content = [slot('w'), fractionNode(slot('n'), slot('d'))];
         break;
       case 'relation':
