@@ -57,10 +57,14 @@ Příklady se generují při každém kole znovu. Typy převzaté z pracovního 
 | Porovnávání | 3/7 ? 5/7 (stejný jmenovatel nebo stejný čitatel) | `<` / `>` |
 | Část z celku | 3/5 z 120 = ? | celé číslo |
 | Na desetinné číslo | 3/4 = ? | desetinné číslo (uznává se `,` i `.`) |
+| Sčítání – stejný jmenovatel | 2/7 + 3/7 = ? | libovolný správný tvar (typ `value`) |
+| Sčítání – různý jmenovatel | 1/4 + 1/6 = ? | libovolný správný tvar (typ `value`) |
 
-Připravené rozšíření: sčítání, odčítání, násobení a dělení zlomků (odpověď zlomek / smíšené číslo).
+Typ odpovědi `value` (políčka celá část – nepovinná, čitatel, jmenovatel): uznává se nepravý zlomek v základním tvaru i smíšené číslo (9/7 i 1 2/7); celý výsledek jen jako celé číslo. Určen i pro další početní operace.
 
-- **Generátory** hlídají „hezká" čísla jako v pracovním listu: jmenovatele zhruba do 12–16, část z celku vychází celá, u desetinných jen jmenovatele s konečným rozvojem (2, 4, 5, 8, 10, 20, 25, 50, 100). Každý generátor vrací zadání, správnou odpověď a postup řešení.
+Připravené rozšíření: odčítání, násobení a dělení zlomků (typ odpovědi `value`).
+
+- **Generátory** hlídají „hezká" čísla jako v pracovním listu: jmenovatele zhruba do 12–16 (u sčítání s různým jmenovatelem společný jmenovatel nejvýše 36), část z celku vychází celá, u desetinných jen jmenovatele s konečným rozvojem (2, 4, 5, 8, 10, 20, 25, 50, 100). Každý generátor vrací zadání, správnou odpověď a postup řešení.
 - **Výběr**: konkrétní kategorie, nebo „Náhodně" (všechny kategorie promíchané). Směr se u matematiky nevolí.
 - **Délka kola**: výchozí 10 příkladů, volitelně 20.
 - **Hra „Zápis"**: zlomky se vykreslují pod sebou (čitatel / čára / jmenovatel). Vstup přes vlastní klávesnici na obrazovce (0–9, `,`, ⌫, potvrdit) do políček podle typu odpovědi (celá část / čitatel / jmenovatel / číslo); u porovnávání dvě velká tlačítka `<` a `>`. Na desktopu funguje i fyzická klávesnice.

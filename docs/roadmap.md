@@ -27,10 +27,11 @@ Specifikace: [zadani.md](zadani.md).
 ## Matematika — zlomky
 
 - [x] Zobecnění setupu/kola pro předmět bez směrů a s generovanými příklady
-- [x] Zlomková aritmetika + generátory 7 kategorií + testy
+- [x] Zlomková aritmetika + generátory 9 kategorií + testy
 - [x] Hra „Zápis" (vykreslení zlomků, klávesnice na obrazovce, vyhodnocení s hláškami, postup po chybě)
 - [x] Vzor a pravidlo u jedné kategorie
-- [ ] Později: sčítání, odčítání, násobení, dělení zlomků
+- [x] Sčítání zlomků (stejný a různý jmenovatel, typ odpovědi `value`)
+- [ ] Později: odčítání, násobení, dělení zlomků
 
 ## Fáze 3 — nasazení
 
