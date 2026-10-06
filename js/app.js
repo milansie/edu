@@ -69,11 +69,31 @@ function showError(error) {
 }
 
 function defaultSettings(subject) {
-  return { categoryIds: [], direction: 'both', gameId: subject.games[0], limit: 0 };
+  return { categoryIds: [], direction: 'both', gameId: subject.games[0], limit: subject.defaultLimit ?? 0 };
 }
 
-/** Načte položky vybraných kategorií, sestaví kolo a přejde do hry. */
+/** Nápověda kategorie, je-li vybraná právě jedna a předmět nápovědy nabízí. */
+function hintFor(subject, settings) {
+  return settings.categoryIds.length === 1 ? (subject.hintFor?.(settings.categoryIds[0]) ?? null) : null;
+}
+
+/** Sestaví kolo: generované příklady (matematika), nebo načtené položky vybraných kategorií, a přejde do hry. */
 async function startRound(subject, settings) {
+  if (subject.generate) {
+    state.play = {
+      subjectId: subject.id,
+      settings: { ...settings },
+      pool: null,
+      hint: hintFor(subject, settings),
+      round: createRound(subject.generate(settings.categoryIds, settings.limit), {
+        limit: settings.limit,
+        makeQuestion: subject.makeQuestion,
+      }),
+    };
+    state.result = null;
+    navigate(`#/${subject.id}/play`);
+    return;
+  }
   const [categories, selected] = await Promise.all([
     subject.loadCategories(),
     subject.loadItems(settings.categoryIds),
@@ -83,6 +103,7 @@ async function startRound(subject, settings) {
     subjectId: subject.id,
     settings: { ...settings },
     pool: { selected, all },
+    hint: null,
     round: createRound(selected, { directions: DIRECTIONS[settings.direction], limit: settings.limit }),
   };
   state.result = null;
@@ -92,7 +113,10 @@ async function startRound(subject, settings) {
 function repeatWrong(subject) {
   const { settings } = state.play;
   const items = state.result.wrong.map((q) => q.item);
-  state.play.round = createRound(items, { directions: DIRECTIONS[settings.direction] });
+  state.play.round = createRound(items, {
+    directions: DIRECTIONS[settings.direction],
+    makeQuestion: subject.makeQuestion,
+  });
   state.result = null;
   navigate(`#/${subject.id}/play`);
 }
@@ -127,10 +151,11 @@ async function route() {
       const game = await getGame(state.play.settings.gameId).load();
       if (token !== renderToken) return;
       const shell = buildShell({ title: subject.title, backHash: setupHash });
-      const { round, pool } = state.play;
+      const { round, pool, hint } = state.play;
       cleanup = game.mount(shell.screen, round, {
         sides: subject.sides,
         pool,
+        hint,
         onProgress: shell.setProgress,
         onDone: () => {
           state.result = round.summary();

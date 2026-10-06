@@ -65,3 +65,15 @@ test('starsFor: hranice 60 % a 90 %', () => {
   assert.equal(starsFor(5, 10), 1);
   assert.equal(starsFor(0, 0), 1);
 });
+
+test('createRound: vlastní makeQuestion nahradí slovíčkovou logiku', () => {
+  const generated = [{ id: 'g1' }, { id: 'g2' }];
+  const makeQuestion = (it) => ({ item: it, prompt: `Q ${it.id}`, answers: [`A ${it.id}`], extra: true });
+  const round = createRound(generated, { makeQuestion, rng: seeded(2) });
+  const q = round.current();
+  assert.equal(q.extra, true);
+  assert.equal(q.prompt, `Q ${q.item.id}`);
+  round.answer(false);
+  assert.equal(round.progress().total, 3);
+  assert.equal(round.summary().total, 2);
+});

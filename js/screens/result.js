@@ -1,5 +1,6 @@
 import { h } from '../ui/dom.js';
 import { starsFor } from '../core/round.js';
+import { renderParts } from '../ui/math.js';
 
 const VERDICTS = {
   3: 'Výborně, takhle se to dělá.',
@@ -20,6 +21,26 @@ function confetti() {
     layer.append(piece);
   }
   return layer;
+}
+
+function wrongTextItem(q) {
+  return h(
+    'li',
+    {},
+    h('span', { class: 'wrong-prompt' }, q.prompt),
+    h('span', { class: 'wrong-answer' }, q.answers.join(' / ')),
+  );
+}
+
+/** Chybný generovaný příklad: zadání, správná odpověď a postup řešení. */
+function wrongMathItem(q) {
+  return h(
+    'li',
+    { class: 'wrong-math' },
+    h('span', { class: 'wrong-prompt' }, renderParts(q.display.prompt)),
+    h('span', { class: 'wrong-answer' }, renderParts(q.display.answer)),
+    h('ul', { class: 'steps' }, q.display.steps.map((step) => h('li', {}, step))),
+  );
 }
 
 /** Výsledek kola: skóre, hvězdy, chybná slova a akce. `summary` pochází z `round.summary()`. */
@@ -50,14 +71,7 @@ export function render(container, { summary, onRepeatWrong, onNewRound }) {
         h(
           'ul',
           { class: 'wrong-list' },
-          summary.wrong.map((q) =>
-            h(
-              'li',
-              {},
-              h('span', { class: 'wrong-prompt' }, q.prompt),
-              h('span', { class: 'wrong-answer' }, q.answers.join(' / ')),
-            ),
-          ),
+          summary.wrong.map((q) => (q.display ? wrongMathItem(q) : wrongTextItem(q))),
         ),
       ),
     );

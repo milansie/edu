@@ -5,7 +5,7 @@ export function sidesOf(direction) {
   return direction === 'ba' ? { source: 'b', target: 'a' } : { source: 'a', target: 'b' };
 }
 
-function makeQuestion(item, directions, rng) {
+function makeVocabQuestion(item, directions, rng) {
   const direction = directions[Math.floor(rng() * directions.length)];
   const { source, target } = sidesOf(direction);
   return { item, direction, prompt: item[source][0], answers: [...item[target]] };
@@ -14,21 +14,24 @@ function makeQuestion(item, directions, rng) {
 /**
  * Sestaví kolo z položek `{ id, category, a: string[], b: string[] }`.
  * `directions` – povolené směry ('ab', 'ba'), při více se losuje per otázka;
- * `limit` – maximální počet položek (0 = všechny), výběr je náhodný.
+ * `limit` – maximální počet položek (0 = všechny), výběr je náhodný;
+ * `makeQuestion(item, rng)` – vlastní sestavení otázky (výchozí: slovíčko podle `directions`),
+ * musí vrátit objekt s `item`, `prompt` a `answers`.
  * Chybně zodpovězená otázka se jednou vrátí na konec fronty; skóre počítá první pokus.
  */
-export function createRound(items, { directions = ['ab'], limit = 0, rng = Math.random } = {}) {
+export function createRound(items, { directions = ['ab'], limit = 0, rng = Math.random, makeQuestion } = {}) {
   const dirs = directions.length > 0 ? directions : ['ab'];
   const shuffled = shuffle(items, rng);
   const chosen = limit > 0 ? shuffled.slice(0, limit) : shuffled;
-  const queue = chosen.map((item) => makeQuestion(item, dirs, rng));
+  const build = makeQuestion ? (item) => makeQuestion(item, rng) : (item) => makeVocabQuestion(item, dirs, rng);
+  const queue = chosen.map(build);
   const initialCount = queue.length;
   const results = [];
   let requeued = 0;
   let answered = 0;
 
   return {
-    /** Aktuální otázka `{ item, direction, prompt, answers }` nebo null, když je kolo hotové. */
+    /** Aktuální otázka `{ item, prompt, answers, ... }` (u slovíček i `direction`) nebo null, když je kolo hotové. */
     current() {
       return queue[0] ?? null;
     },

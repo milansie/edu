@@ -1,13 +1,14 @@
 import { h } from '../ui/dom.js';
 
-const LIMITS = [
+const DEFAULT_LIMITS = [
   { value: 0, label: 'Vše' },
   { value: 10, label: '10' },
   { value: 20, label: '20' },
 ];
 
 /**
- * Nastavení kola. `settings` (`{ categoryIds, direction, gameId, limit }`) se mění přímo,
+ * Nastavení kola. Předmět může volitelně dodat `limits` (počty otázek), `allLabel` (text dlaždice „Vše“)
+ * a vynechat `sides` (pak se nenabízí směr). `settings` (`{ categoryIds, direction, gameId, limit }`) se mění přímo,
  * takže při návratu na obrazovku zůstane výběr zachován.
  */
 export function render(container, { subject, categories, games, settings, onStart }) {
@@ -63,7 +64,7 @@ export function render(container, { subject, categories, games, settings, onStar
     h(
       'div',
       { class: 'tile-grid' },
-      tile('Vše', allSelected, () => {
+      tile(subject.allLabel ?? 'Vše', allSelected, () => {
         settings.categoryIds = allSelected() ? [] : [...allIds];
       }),
     ),
@@ -83,11 +84,14 @@ export function render(container, { subject, categories, games, settings, onStar
     ]),
   );
 
-  const directions = [
-    { value: 'ab', label: `${subject.sides.a} → ${subject.sides.b}` },
-    { value: 'ba', label: `${subject.sides.b} → ${subject.sides.a}` },
-    { value: 'both', label: 'Oba' },
-  ];
+  const limits = subject.limits ? subject.limits.map((n) => ({ value: n, label: String(n) })) : DEFAULT_LIMITS;
+  const directions = subject.sides
+    ? [
+        { value: 'ab', label: `${subject.sides.a} → ${subject.sides.b}` },
+        { value: 'ba', label: `${subject.sides.b} → ${subject.sides.a}` },
+        { value: 'both', label: 'Oba' },
+      ]
+    : [];
   const directionSection = h(
     'section',
     {},
@@ -142,7 +146,7 @@ export function render(container, { subject, categories, games, settings, onStar
     h(
       'div',
       { class: 'tile-grid cols-3' },
-      LIMITS.map((l) =>
+      limits.map((l) =>
         tile(
           l.label,
           () => settings.limit === l.value,
@@ -161,7 +165,7 @@ export function render(container, { subject, categories, games, settings, onStar
   );
 
   container.append(
-    h('div', { class: 'scroll-area' }, categorySection, directionSection, gameSection, limitSection),
+    h('div', { class: 'scroll-area' }, categorySection, subject.sides ? directionSection : null, gameSection, limitSection),
     h('div', { class: 'screen-footer' }, startButton),
   );
   refresh();
