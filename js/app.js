@@ -110,7 +110,7 @@ async function route() {
       renderSubjects(shell.screen, { subjects, onPick: (id) => navigate(`#/${id}/setup`) });
       return;
     }
-    if (!getSubject(subjectId)) {
+    if (!getSubject(subjectId)?.load) {
       redirect('#/');
       return;
     }
