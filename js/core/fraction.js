@@ -13,6 +13,11 @@ export function gcd(a, b) {
   return x;
 }
 
+/** Nejmenší společný násobek kladných čísel. */
+export function lcm(a, b) {
+  return (a / gcd(a, b)) * b;
+}
+
 /** Zlomek v základním tvaru (celé číslo má jmenovatel 1). */
 export function reduce({ n, d }) {
   const g = gcd(n, d) || 1;
