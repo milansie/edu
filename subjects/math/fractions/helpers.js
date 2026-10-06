@@ -1,4 +1,4 @@
-import { gcd } from '../../../js/core/fraction.js';
+import { gcd, reduce } from '../../../js/core/fraction.js';
 
 /**
  * Pomocné funkce generátorů. Části zápisu (`parts`) popisují vykreslitelný výraz:
@@ -38,4 +38,27 @@ export function coprimeBelow(rng, d) {
 /** Sestaví vygenerovanou položku. `prompt`/`answer` jsou `parts`, `steps` pole vět postupu. */
 export function makeItem(category, answerType, expected, prompt, answer, steps) {
   return { id: `${category}:${plainText(prompt)}`, category, answerType, expected, display: { prompt, answer, steps } };
+}
+
+/**
+ * Výsledek součtu `n/d` pro odpověď typu `value`: `expected` je zlomek v základním tvaru, `answer` zápis
+ * pro zobrazení (celé číslo; zlomek; nepravý zlomek s ekvivalentním smíšeným číslem) a `steps` kroky
+ * krácení a převodu na smíšené číslo (prázdné, když není co upravovat).
+ */
+export function valueResult(n, d) {
+  const expected = reduce({ n, d });
+  const steps = [];
+  if (expected.n !== n) steps.push(`${n}/${d} = ${expected.n}${expected.d === 1 ? '' : `/${expected.d}`}`);
+  let answer;
+  if (expected.d === 1) {
+    answer = [text(String(expected.n))];
+  } else if (expected.n > expected.d) {
+    const w = Math.floor(expected.n / expected.d);
+    const r = expected.n % expected.d;
+    steps.push(`${expected.n}/${expected.d} = ${w} ${r}/${expected.d}`);
+    answer = [frac(expected.n, expected.d), text('='), mixed(w, r, expected.d)];
+  } else {
+    answer = [frac(expected.n, expected.d)];
+  }
+  return { expected, answer, steps };
 }

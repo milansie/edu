@@ -5,9 +5,11 @@ import expanding from './expanding.js';
 import comparing from './comparing.js';
 import ofWhole from './of-whole.js';
 import toDecimal from './to-decimal.js';
+import addSame from './add-same.js';
+import addDiff from './add-diff.js';
 
 /**
  * Kategorie zlomků v pořadí pracovního listu. Kategorie:
  * `{ id, title, answerType, hint: { rule, example }, generate(rng) → položka }`.
  */
-export const categories = [shortening, toMixed, fromMixed, expanding, comparing, ofWhole, toDecimal];
+export const categories = [shortening, toMixed, fromMixed, expanding, comparing, ofWhole, toDecimal, addSame, addDiff];

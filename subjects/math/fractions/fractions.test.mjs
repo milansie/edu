@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { seeded } from '../../../js/core/testutil.mjs';
-import { gcd, equalsValue, formatDecimal } from '../../../js/core/fraction.js';
+import { gcd, lcm, equalsValue, formatDecimal } from '../../../js/core/fraction.js';
 import { evaluate } from '../check.js';
 import { categories } from './index.js';
 import { subject } from '../subject.js';
@@ -20,6 +20,8 @@ function correctInput(item) {
     case 'fraction-exact':
     case 'fraction':
       return { n: String(expected.n), d: String(expected.d) };
+    case 'value':
+      return expected.d === 1 ? { w: '', n: String(expected.n), d: '' } : { w: '', n: String(expected.n), d: String(expected.d) };
     case 'relation':
       return expected;
     case 'integer':
@@ -120,6 +122,64 @@ test('na desetinné: konečný rozvoj do 3 míst, občas větší než 1, nikdy 
     const text = formatDecimal(item.expected);
     assert.ok((text.split(',')[1] ?? '').length <= 3);
     if (n > d) improper++;
+  });
+  assert.ok(improper > 0);
+});
+
+/** Součet dvou zlomků z promptu `[a, '+', b, '=']` jako nezkrácený zlomek. */
+function promptSum(item) {
+  const [a, , b] = item.display.prompt;
+  return { a, b, sum: { n: a.n * b.d + b.n * a.d, d: a.d * b.d } };
+}
+
+test('add-same: stejný jmenovatel, vlastní sčítance, součet v základním tvaru, oba zápisy projdou', () => {
+  let improper = 0;
+  let whole = 0;
+  forEachItem('add-same', 40, (item) => {
+    const { a, b, sum } = promptSum(item);
+    assert.equal(a.d, b.d);
+    assert.ok(a.d >= 3 && a.d <= 12);
+    assert.ok(a.n >= 1 && a.n < a.d && b.n >= 1 && b.n < b.d);
+    assert.ok(equalsValue(sum, item.expected));
+    assert.equal(gcd(item.expected.n, item.expected.d), 1);
+    assert.ok(item.display.steps.length > 0);
+    const e = item.expected;
+    if (e.d === 1) {
+      whole++;
+      assert.equal(evaluate('value', e, { w: String(e.n), n: '', d: '' }).status, 'correct');
+      assert.equal(evaluate('value', e, { w: '', n: String(e.n), d: '' }).status, 'correct');
+    } else {
+      assert.equal(evaluate('value', e, { w: '', n: String(e.n), d: String(e.d) }).status, 'correct');
+      if (e.n > e.d) {
+        improper++;
+        const w = Math.floor(e.n / e.d);
+        assert.equal(evaluate('value', e, { w: String(w), n: String(e.n % e.d), d: String(e.d) }).status, 'correct');
+      }
+    }
+  });
+  assert.ok(improper > 0 && whole > 0);
+});
+
+test('add-diff: různé jmenovatele, lcm <= 36, vlastní sčítance v základním tvaru, oba zápisy projdou', () => {
+  let improper = 0;
+  forEachItem('add-diff', 41, (item) => {
+    const { a, b, sum } = promptSum(item);
+    assert.notEqual(a.d, b.d);
+    assert.ok(a.d >= 2 && a.d <= 12 && b.d >= 2 && b.d <= 12);
+    assert.ok(lcm(a.d, b.d) <= 36);
+    assert.ok(a.n >= 1 && a.n < a.d && gcd(a.n, a.d) === 1);
+    assert.ok(b.n >= 1 && b.n < b.d && gcd(b.n, b.d) === 1);
+    assert.ok(equalsValue(sum, item.expected));
+    assert.equal(gcd(item.expected.n, item.expected.d), 1);
+    assert.ok(item.display.steps.length > 0);
+    const e = item.expected;
+    assert.ok(e.d > 1);
+    assert.equal(evaluate('value', e, { w: '', n: String(e.n), d: String(e.d) }).status, 'correct');
+    if (e.n > e.d) {
+      improper++;
+      const w = Math.floor(e.n / e.d);
+      assert.equal(evaluate('value', e, { w: String(w), n: String(e.n % e.d), d: String(e.d) }).status, 'correct');
+    }
   });
   assert.ok(improper > 0);
 });
