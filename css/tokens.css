@@ -48,6 +48,7 @@
   --text-lg: 1.35rem;
   --text-xl: 2rem;
   --text-card: clamp(1.6rem, 7vw, 2.4rem);
+  --text-card-long: clamp(1rem, 4.5vw, 1.35rem);
 
   --border-w: 4px;
   --radius: 6px;

@@ -70,7 +70,7 @@ function showError(error) {
 }
 
 function defaultSettings(subject) {
-  return { categoryIds: [], direction: 'both', gameId: subject.games[0], limit: subject.defaultLimit ?? 0 };
+  return { categoryIds: [], direction: subject.sides ? 'both' : 'ab', gameId: subject.games[0], limit: subject.defaultLimit ?? 0 };
 }
 
 /** Nápověda kategorie, je-li vybraná právě jedna a předmět nápovědy nabízí. */
@@ -115,9 +115,10 @@ async function startRound(subject, topicId, settings) {
 
 function repeatWrong(subject) {
   const { settings, topicId } = state.play;
+  const direction = subject.sides ? settings.direction : 'ab';
   const items = state.result.summary.wrong.map((q) => q.item);
   state.play.round = createRound(items, {
-    directions: DIRECTIONS[settings.direction],
+    directions: DIRECTIONS[direction],
     makeQuestion: subject.makeQuestion,
   });
   state.result = null;

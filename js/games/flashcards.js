@@ -1,11 +1,12 @@
 import { h } from '../ui/dom.js';
 
 const SWIPE_THRESHOLD = 80;
+const LONG_TEXT_LENGTH = 60;
 const TAP_TOLERANCE = 10;
 
 /**
  * Kartičky: tap/mezerník otočí, pak „Umím" / „Neumím" (tlačítka, swipe, šipky).
- * `options`: `{ sides, onDone, onProgress }`. Vrací `unmount()`.
+ * `options`: `{ sides?, onDone, onProgress }`. Vrací `unmount()`.
  */
 export function mount(container, round, { sides, onDone, onProgress }) {
   let flipped = false;
@@ -13,6 +14,11 @@ export function mount(container, round, { sides, onDone, onProgress }) {
   let knowButton = null;
   let dontKnowButton = null;
   let hint = null;
+
+  /** Text karty; dlouhý text dostane menší písmo. */
+  function textEl(text) {
+    return h('span', { class: text.length > LONG_TEXT_LENGTH ? 'card-text card-text--long' : 'card-text' }, text);
+  }
 
   function render() {
     const question = round.current();
@@ -29,14 +35,14 @@ export function mount(container, round, { sides, onDone, onProgress }) {
         h(
           'div',
           { class: 'card-face card-front' },
-          h('span', { class: 'card-side' }, sides[from]),
-          h('span', { class: 'card-text' }, question.prompt),
+          h('span', { class: 'card-side' }, sides?.[from] ?? 'Otázka'),
+          textEl(question.prompt),
         ),
         h(
           'div',
           { class: 'card-face card-back' },
-          h('span', { class: 'card-side' }, sides[to]),
-          h('span', { class: 'card-text' }, question.answers.join(' / ')),
+          h('span', { class: 'card-side' }, sides?.[to] ?? 'Odpověď'),
+          textEl(question.answers.join(' / ')),
         ),
       ),
     );

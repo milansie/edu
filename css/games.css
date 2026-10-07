@@ -55,6 +55,7 @@
   box-shadow: var(--shadow-card);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  overflow-y: auto;
 }
 
 .card-back {
@@ -79,6 +80,10 @@
   font-weight: var(--weight-display);
   font-size: var(--text-card);
   overflow-wrap: anywhere;
+}
+
+.card-text--long {
+  font-size: var(--text-card-long);
 }
 
 .hint {

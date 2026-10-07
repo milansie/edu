@@ -155,7 +155,14 @@ export function render(container, { subject, categories, games, settings, onStar
   );
 
   container.append(
-    h('div', { class: 'scroll-area' }, categorySection, subject.sides ? directionSection : null, gameSection, limitSection),
+    h(
+      'div',
+      { class: 'scroll-area' },
+      categorySection,
+      subject.sides ? directionSection : null,
+      games.length > 1 ? gameSection : null,
+      limitSection,
+    ),
     h('div', { class: 'screen-footer' }, startButton),
   );
   refresh();
