@@ -1,0 +1,8 @@
+{
+  "topics": [
+    { "id": "rim", "title": "Řím" }
+  ],
+  "categories": [
+    { "id": "rim", "file": "rim.csv", "title": "Řím", "topic": "rim" }
+  ]
+}

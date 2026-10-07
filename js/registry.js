@@ -3,7 +3,8 @@
  * Předmět: `{ id, title, icon, load() → subject }`, kde subject má tvar
  * `{ id, title, sides, langs?, games, loadTopics(), loadCategories(), loadItems(categoryIds) }`. Předmět s generovanými
  * příklady místo `loadItems` nabízí `generate(categoryIds, count)` a `makeQuestion(item)`; volitelně
- * `hintFor(categoryId)`, `limits`, `defaultLimit`, `allLabel`; bez `sides` se nenabízí směr.
+ * `hintFor(categoryId)`, `limits`, `defaultLimit`, `allLabel`; bez `sides` se nenabízí směr
+ * a kola mají směr 'ab'; předmět s jedinou hrou v `games` nenabízí volbu hry.
  * Předmět bez `load` je připravovaný: zobrazí se jako neaktivní dlaždice a nejde otevřít.
  * Hra: `{ id, title, icon, load() → { mount(container, round, options) → unmount } }`.
  */
@@ -19,6 +20,12 @@ export const subjects = [
     title: 'Matematika',
     icon: '1+1',
     load: () => import('../subjects/math/subject.js').then((m) => m.subject),
+  },
+  {
+    id: 'history',
+    title: 'Dějepis',
+    icon: 'DĚJ',
+    load: () => import('../subjects/history/subject.js').then((m) => m.subject),
   },
 ];
 
