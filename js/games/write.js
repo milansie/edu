@@ -4,11 +4,13 @@ import { ANSWER_SLOTS, evaluate, isComplete } from '../../subjects/math/check.js
 
 const AUTO_NEXT_MS = 800;
 const MAX_LENGTH = 7;
+const ORDER_LENGTH = 4;
 const COMMA_TYPES = new Set(['decimal']);
 
 /**
  * Hra „Zápis“: odpověď se zapisuje do políček podle typu odpovědi (celá část / čitatel / jmenovatel /
- * číslo) vlastní klávesnicí na obrazovce nebo fyzickou klávesnicí; u porovnávání dvěma tlačítky `<` `>`.
+ * číslo) vlastní klávesnicí na obrazovce nebo fyzickou klávesnicí; u porovnávání dvěma tlačítky `<` `>`,
+ * u řazení ťukáním na zlomky v pořadí (klávesy `1`–`4`, Backspace vrací poslední).
  * Otázka nese `answerType`, `expected` a `display` (viz subjects/math). `options`:
  * `{ hint, image, onDone, onProgress }`, kde `hint` je `{ rule, example }` nebo null a `image` je `{ src }` dekorativní postavy předmětu nebo null. Vrací `unmount()`.
  */
@@ -21,6 +23,8 @@ export function mount(container, round, { hint, image, onDone, onProgress }) {
   let values = {};
   let active = null;
   let slotEls = new Map();
+  let picked = [];
+  let orderButtons = [];
   let controls = null;
   let feedback = null;
   let solution = null;
@@ -35,6 +39,8 @@ export function mount(container, round, { hint, image, onDone, onProgress }) {
     slots = ANSWER_SLOTS[question.answerType] ?? [];
     values = Object.fromEntries(slots.map((s) => [s.key, '']));
     active = (slots.find((s) => !s.optional) ?? slots[0])?.key ?? null;
+    picked = [];
+    orderButtons = [];
     slotEls = new Map(
       slots.map((s) => [
         s.key,
@@ -48,7 +54,12 @@ export function mount(container, round, { hint, image, onDone, onProgress }) {
       ]),
     );
 
-    controls = question.answerType === 'relation' ? buildRelationPad() : buildKeypad();
+    if (isOrder()) {
+      slotEls = new Map(Array.from({ length: ORDER_LENGTH }, (_, i) => [i, h('div', { class: 'answer-slot order-slot' })]));
+    }
+    if (question.answerType === 'relation') controls = buildRelationPad();
+    else if (isOrder()) controls = buildOrderPad();
+    else controls = buildKeypad();
     feedback = h('p', { class: 'feedback', 'aria-live': 'polite' });
     solution = h(
       'div',
@@ -81,6 +92,10 @@ export function mount(container, round, { hint, image, onDone, onProgress }) {
     refreshSlots();
   }
 
+  function isOrder() {
+    return question.answerType === 'order';
+  }
+
   function buildHint() {
     return h(
       'div',
@@ -104,6 +119,9 @@ export function mount(container, round, { hint, image, onDone, onProgress }) {
         content = [slot('w'), fractionNode(slot('n'), slot('d'))];
         break;
       case 'relation':
+        break;
+      case 'order':
+        content = [...slotEls.values()].flatMap((el, i) => (i === 0 ? [el] : [h('span', { class: 'math-text' }, '<'), el]));
         break;
       default:
         content = [fractionNode(slot('n'), slot('d'))];
@@ -145,7 +163,52 @@ export function mount(container, round, { hint, image, onDone, onProgress }) {
     );
   }
 
+  function buildOrderPad() {
+    orderButtons = question.display.prompt.map((part, i) =>
+      h(
+        'button',
+        { type: 'button', class: 'btn btn-purple order-key', 'aria-label': `${part.n}/${part.d}`, onclick: () => pickFraction(i) },
+        renderParts([part]),
+      ),
+    );
+    return h(
+      'div',
+      { class: 'order-pad' },
+      orderButtons,
+      h('button', { type: 'button', class: 'btn btn-orange keypad-key', 'aria-label': 'Vrátit poslední', onclick: unpickFraction }, '⌫'),
+      h('button', { type: 'button', class: 'btn btn-green keypad-key keypad-ok', 'aria-label': 'Potvrdit', onclick: submit }, '✓'),
+    );
+  }
+
+  function refreshOrder() {
+    for (const [i, el] of slotEls) {
+      const index = picked[i];
+      el.replaceChildren(...(index === undefined ? [] : [renderParts([question.display.prompt[index]])]));
+      el.classList.toggle('is-active', !locked && i === picked.length);
+    }
+    orderButtons.forEach((button, i) => {
+      button.disabled = picked.includes(i);
+    });
+  }
+
+  /** Přesune zlomek `index` zadání do dalšího volného políčka; plné řešení se neodesílá, jde ještě opravit. */
+  function pickFraction(index) {
+    if (locked || picked.length >= ORDER_LENGTH || picked.includes(index)) return;
+    picked.push(index);
+    refreshSlots();
+  }
+
+  function unpickFraction() {
+    if (locked) return;
+    picked.pop();
+    refreshSlots();
+  }
+
   function refreshSlots() {
+    if (isOrder()) {
+      refreshOrder();
+      return;
+    }
     for (const [key, el] of slotEls) {
       el.textContent = values[key];
       el.classList.toggle('is-active', !locked && key === active);
@@ -188,7 +251,13 @@ export function mount(container, round, { hint, image, onDone, onProgress }) {
   }
 
   function submit() {
-    if (locked || slots.length === 0) return;
+    if (locked) return;
+    if (isOrder()) {
+      if (!isComplete('order', picked)) shake();
+      else finish(evaluate('order', question.expected, picked));
+      return;
+    }
+    if (slots.length === 0) return;
     if (!isComplete(question.answerType, values)) {
       shake();
       return;
@@ -239,6 +308,14 @@ export function mount(container, round, { hint, image, onDone, onProgress }) {
       return;
     }
     if (locked) return;
+    if (isOrder()) {
+      if (/^[1-4]$/.test(e.key)) pickFraction(Number(e.key) - 1);
+      else if (e.key === 'Backspace') {
+        e.preventDefault();
+        unpickFraction();
+      }
+      return;
+    }
     if (/^\d$/.test(e.key)) {
       typeChar(e.key);
     } else if (e.key === ',' || e.key === '.') {

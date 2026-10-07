@@ -23,6 +23,7 @@ function correctInput(item) {
     case 'value':
       return expected.d === 1 ? { w: '', n: String(expected.n), d: '' } : { w: '', n: String(expected.n), d: String(expected.d) };
     case 'relation':
+    case 'order':
       return expected;
     case 'integer':
       return { v: String(expected) };
@@ -204,4 +205,24 @@ test('subject.makeQuestion: prostý text a display', () => {
   assert.equal(q.answerType, 'reduced');
   assert.equal(subject.hintFor('shortening'), category('shortening').hint);
   assert.equal(subject.hintFor('nope'), null);
+});
+
+test('ordering: 4 různé vlastní zlomky, expected řadí vzestupně, vyskytují se všechny varianty', () => {
+  const variants = new Set();
+  forEachItem('ordering', 31, (item) => {
+    const fr = item.display.prompt;
+    assert.equal(fr.length, 4);
+    assert.ok(fr.every((f) => f.t === 'frac' && f.n >= 1 && f.n < f.d));
+    for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) assert.ok(!equalsValue(fr[i], fr[j]));
+    assert.deepEqual([...item.expected].sort(), [0, 1, 2, 3]);
+    for (let i = 0; i < 3; i++) {
+      const a = fr[item.expected[i]];
+      const b = fr[item.expected[i + 1]];
+      assert.ok(a.n * b.d < b.n * a.d);
+    }
+    const sameD = fr.every((f) => f.d === fr[0].d);
+    const sameN = fr.every((f) => f.n === fr[0].n);
+    variants.add(sameD ? 'd' : sameN ? 'n' : 'mix');
+  });
+  assert.equal(variants.size, 3);
 });

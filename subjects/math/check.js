@@ -2,7 +2,7 @@ import { gcd, equalsValue, fromMixed, parseDecimal } from '../../js/core/fractio
 
 /**
  * Políčka odpovědi podle typu: `{ key, label, optional? }`. Typ `relation` nemá políčka
- * (odpovědí je znak `<` / `>`). U `reduced` lze vynechat jmenovatele = celé číslo. U `value` je celá část
+ * (odpovědí je znak `<` / `>`), stejně tak `order` (odpovědí je pole indexů zlomků v pořadí). U `reduced` lze vynechat jmenovatele = celé číslo. U `value` je celá část
  * nepovinná a povinnost políček určuje `isComplete` (celé číslo, zlomek nebo smíšené číslo).
  */
 export const ANSWER_SLOTS = {
@@ -18,7 +18,10 @@ export const ANSWER_SLOTS = {
   integer: [{ key: 'v', label: 'Výsledek' }],
   decimal: [{ key: 'v', label: 'Výsledek' }],
   relation: [],
+  order: [],
 };
+
+const ORDER_LENGTH = 4;
 
 const WRONG = { status: 'wrong' };
 const CORRECT = { status: 'correct' };
@@ -35,11 +38,12 @@ function num(text) {
 }
 
 /**
- * Jsou vyplněna všechna povinná políčka (resp. je vybrán znak u `relation`)? U `value` stačí jen celá část,
+ * Jsou vyplněna všechna povinná políčka (resp. je vybrán znak u `relation`, resp. 4 různé indexy u `order`)? U `value` stačí jen celá část,
  * jen čitatel (celé číslo), nebo čitatel se jmenovatelem (s celou částí i bez ní).
  */
 export function isComplete(answerType, input) {
   if (answerType === 'relation') return input === '<' || input === '>';
+  if (answerType === 'order') return Array.isArray(input) && input.length === ORDER_LENGTH && new Set(input).size === ORDER_LENGTH;
   if (answerType === 'value') {
     const filled = (key) => String(input?.[key] ?? '') !== '';
     return filled('n') ? filled('d') || !filled('w') : filled('w') && !filled('d');
@@ -51,7 +55,7 @@ export function isComplete(answerType, input) {
  * Vyhodnotí odpověď podle hodnoty, ne textu. `expected` a `input` mají tvar podle typu:
  * `reduced`/`fraction`/`fraction-exact` `{ n, d }` (u `input` řetězce), `mixed` `{ w, n, d }`,
  * `value` `{ n, d }` v základním tvaru (u `input` `{ w, n, d }`, celá část nepovinná, bez jmenovatele celé číslo),
- * `relation` znak, `integer` číslo (u `input` `{ v }`), `decimal` zlomek `{ n, d }` (u `input` `{ v }`).
+ * `relation` znak, `order` pole indexů (shoda prvek po prvku), `integer` číslo (u `input` `{ v }`), `decimal` zlomek `{ n, d }` (u `input` `{ v }`).
  * Vrací `{ status: 'correct' | 'wrong', message? }`; `message` vysvětluje, proč hodnotově správná odpověď neprošla.
  */
 export function evaluate(answerType, expected, input) {
@@ -68,6 +72,8 @@ export function evaluate(answerType, expected, input) {
       return evalFraction(expected, input);
     case 'relation':
       return input === expected ? CORRECT : WRONG;
+    case 'order':
+      return Array.isArray(input) && input.length === expected.length && expected.every((v, i) => v === input[i]) ? CORRECT : WRONG;
     case 'integer':
       return num(input?.v) === expected ? CORRECT : WRONG;
     case 'decimal': {

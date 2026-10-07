@@ -48,6 +48,12 @@ test('fraction: hodnota a základní tvar', () => {
   assert.equal(evaluate('fraction', { n: 26, d: 5 }, frac(52, 10)).message, 'Správně, ale ještě zkrať');
 });
 
+test('order: shoda pole indexů', () => {
+  assert.equal(status('order', [2, 0, 3, 1], [2, 0, 3, 1]), 'correct');
+  assert.equal(status('order', [2, 0, 3, 1], [0, 2, 3, 1]), 'wrong');
+  assert.equal(status('order', [2, 0, 3, 1], []), 'wrong');
+});
+
 test('relation, integer, decimal', () => {
   assert.equal(status('relation', '<', '<'), 'correct');
   assert.equal(status('relation', '<', '>'), 'wrong');
@@ -113,4 +119,7 @@ test('isComplete: povinná políčka', () => {
   assert.ok(isComplete('relation', '>'));
   assert.ok(!isComplete('relation', ''));
   assert.ok(!isComplete('decimal', { v: '' }));
+  assert.ok(isComplete('order', [2, 0, 3, 1]));
+  assert.ok(!isComplete('order', [2, 0, 3]));
+  assert.ok(!isComplete('order', [2, 0, 2, 1]));
 });
