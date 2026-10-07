@@ -1,6 +1,6 @@
-# edu — zadání
+# Brajnkraft — zadání
 
-Statický web na procvičování učiva pro 12letého uživatele. První předmět je angličtina (slovíčka z učebnice), později přibude matematika, případně další jazyky. Nejde o dlouhodobé učení se statistikami, ale o rychlé ad-hoc testy: vyber si, co procvičit, zahraj kolo, podívej se na výsledek.
+Brajnkraft je statický web na procvičování učiva pro 12letého uživatele. První předmět je angličtina (slovíčka z učebnice), později přibude matematika, případně další jazyky. Nejde o dlouhodobé učení se statistikami, ale o rychlé ad-hoc testy: vyber si, co procvičit, zahraj kolo, podívej se na výsledek.
 
 ## Cíle a necíle
 
@@ -128,6 +128,12 @@ Skóre, 1–3 hvězdy podle úspěšnosti, seznam chybných slov se správnou od
 - Data mají verzi schématu; nevalidní/poškozená data se nesmí shodit appku (fallback na prázdný profil).
 
 ## Vizuál a UX
+
+- **Identita**: název Brajnkraft, pixel-art logo mozku (`assets/logo-brain.svg`, použité i jako favicon).
+- **Maskot Brajník** s náhodnými hláškami na úvodní obrazovce a hláškami podle pásma skóre na výsledku kola (`js/quips.js`, čistá logika s testy).
+- **Postavy předmětů** v `assets/` (čistě dekorativní obrázky, `alt=""`): Tea-Rex (angličtina), Kalkulátoro Zlomkini (matematika), Pizzarius Maximus (dějepis).
+- **Přezdívky předmětů** na dlaždicích: Engliš, Matyka (s přeškrtnutým „y" opraveným na „i"), Děják.
+- V `js/registry.js` má předmět volitelná pole `image` (`{ src, alt }`, `alt` = jméno postavy) a `nickname` (pole částí; část `{ wrong, fix }` = přeškrtnutý překlep s opravou). Bez nich se zobrazí textová ikona a `title`.
 
 - Barevně a hravě, spíš „klučičí" styl — inspirace Minecraft / Brawl Stars (sytě barevné bloky, výrazné obrysy, pixelový font na nadpisy, čitelný font na obsah). Ne pastelové/jednorožcové.
 - Animace (otočení karty, odměna při dobrém výsledku), respektuje `prefers-reduced-motion`.

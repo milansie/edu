@@ -43,6 +43,7 @@ Specifikace: [zadani.md](zadani.md).
 ## Fáze 3 — nasazení
 
 - [x] `_headers` (CSP a security hlavičky)
+- [x] Přejmenování na Brajnkraft, vizuální identita: pixel logo/favicon, maskot Brajník s hláškami (`js/quips.js`), postavy a přezdívky předmětů (`image`, `nickname` v registry)
 - [ ] README (spuštění, struktura, jak přidat kategorii / předmět)
 - [ ] Deploy na Cloudflare Pages
 - [ ] PWA (manifest, offline) — nice-to-have
@@ -51,3 +52,4 @@ Specifikace: [zadani.md](zadani.md).
 
 - Zlomky: obrázek koláče u porovnávání/krácení, časová výzva, „najdi chybu"
 - Další jazyky
+- Reakce Brajníka během hry
