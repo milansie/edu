@@ -351,6 +351,66 @@
   max-height: none;
 }
 
+/* Psaní: kompaktní zadání, aby se s otevřenou klávesnicí vešlo zadání, políčko a tlačítko; jinak se posouvá. */
+.game-typing {
+  overflow-y: auto;
+}
+
+.game-typing .prompt-card {
+  flex: 0 0 auto;
+  gap: var(--space-2);
+  min-height: auto;
+  max-height: none;
+  padding: var(--space-3);
+}
+
+.game-typing .card-text {
+  font-size: var(--text-xl);
+}
+
+.typing-input {
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: var(--tap-min);
+  padding: 0 var(--space-3);
+  font: inherit;
+  font-size: var(--text-lg);
+  font-weight: 800;
+  text-align: center;
+  color: var(--color-ink);
+  background: var(--color-white);
+  border: var(--border-w) solid var(--color-ink);
+  border-radius: var(--radius);
+}
+
+.typing-input:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.typing-input.is-correct {
+  background: var(--color-green-light);
+  border-color: var(--color-green-dark);
+}
+
+.typing-input.is-wrong {
+  background: var(--color-red-light);
+  border-color: var(--color-red-dark);
+}
+
+.solution-text {
+  font-size: var(--text-lg);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.solution-text mark {
+  padding: 0 var(--space-1);
+  color: var(--color-white);
+  background: var(--color-red);
+  border-radius: var(--radius);
+}
+
 .hint-card {
   display: flex;
   flex-wrap: wrap;

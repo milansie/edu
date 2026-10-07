@@ -51,7 +51,8 @@ export const subject = {
   id: 'en',
   title: 'Angličtina',
   sides: { a: 'EN', b: 'CZ' },
-  games: ['flashcards', 'choice'],
+  langs: { a: 'en', b: 'cs' },
+  games: ['flashcards', 'choice', 'typing'],
 
   /** Vrací `[{ id, title, subtitle? }]` podle `data/index.json`. */
   async loadTopics() {

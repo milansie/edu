@@ -175,6 +175,7 @@ async function route() {
       const { round, pool, hint } = state.play;
       cleanup = game.mount(shell.screen, round, {
         sides: subject.sides,
+        langs: subject.langs,
         pool,
         hint,
         onProgress: shell.setProgress,
