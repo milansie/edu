@@ -33,6 +33,13 @@ Specifikace: [zadani.md](zadani.md).
 - [x] Sčítání zlomků (stejný a různý jmenovatel, typ odpovědi `value`)
 - [ ] Později: odčítání, násobení, dělení zlomků
 
+## Dějepis
+
+- [x] Předmět Dějepis: kartičky z CSV (NotebookLM), téma Řím
+- [x] Předmět bez stran a s jednou hrou (bez směru a volby hry, popisky Otázka/Odpověď, menší písmo u dlouhého textu)
+- [ ] Další témata (nové CSV + řádek v `index.json`)
+- [ ] Sjednocení loaderu s angličtinou do obecného předmětu „páry"
+
 ## Fáze 3 — nasazení
 
 - [x] `_headers` (CSP a security hlavičky)

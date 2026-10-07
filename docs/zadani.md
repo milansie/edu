@@ -44,6 +44,24 @@ get a good grade = dostat dobrou známku
 - Přidání lekce = nový `.txt` + řádek v `categories` (případně nové téma v `topics`), žádná změna kódu.
 - Seed data dodá uživatel; pro vývoj 2–3 ukázkové kategorie po 6–10 slovech.
 
+## Dějepis — data
+
+Jeden CSV soubor na kategorii v `subjects/history/data/`, seznam témat a kategorií v `subjects/history/data/index.json` (stejná struktura jako u angličtiny, soubory jsou `.csv`).
+
+Formát souboru — export kartiček z NotebookLM: UTF-8 (BOM se toleruje), hlavička `Otázka;Odpověď`, oddělovač `;` (podle hlavičky i `,`), jeden řádek = jedna kartička:
+
+```
+Otázka;Odpověď
+Kdo založil Řím podle pověsti?;Romulus.
+"Co je to; a proč?";"Odpověď se středníkem; v uvozovkách."
+```
+
+- Pole mohou být v uvozovkách (`""` = uvozovka) a obsahovat oddělovač i konec řádku; prázdné řádky se ignorují, neplatný řádek se přeskočí s varováním v konzoli.
+- Postup: fotky ze sešitu → NotebookLM → export kartiček jako CSV → kopie do `subjects/history/data/` → řádek v `categories` (případně téma v `topics`). Žádná změna kódu.
+- Jen hra Kartičky (sebehodnocení), směr vždy otázka → odpověď, strany se jmenují „Otázka" / „Odpověď"; volba hry ani směru se nenabízí.
+- Počet otázek v kole: 10 / 20 / 30, výchozí 30 (z velké sady se náhodně vybere). Dlouhý text na kartě se zobrazí menším písmem.
+- Identita kartičky = kategorie + otázka (normalizovaná).
+
 ## Matematika — zlomky
 
 Příklady se generují při každém kole znovu. Typy převzaté z pracovního listu (6. ročník), každý typ = jedna kategorie ve skupině „Zlomky":
