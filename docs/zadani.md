@@ -38,7 +38,7 @@ get a good grade = dostat dobrou známku
 
 - Řádek začínající `#` je komentář (první může nést název kategorie, autoritativní je ale `index.json`), prázdné řádky se ignorují.
 - Vícero přijatelných anglických tvarů lze stejně oddělit `|` vlevo.
-- Text v závorce je doplňující nápověda, např. `stage = fáze (jeviště, pódium)` — první tvar je překlad ze sešitu (ten vyžaduje učitel), závorka nabízí přesnější význam. Zobrazuje se celý; při psaní se závorka při porovnání ignoruje a stačí odpovědět „fáze".
+- První český tvar je překlad ze sešitu (ten vyžaduje učitel), další tvary za `|` jsou přesnější významy, např. `stage = fáze | jeviště | pódium` — při psaní se uzná kterýkoliv. Text v závorce je jen poznámka: zobrazí se, ale při porovnání se ignoruje (nevyžaduje se ani neuznává).
 - Identita slova = kategorie + anglický text (normalizovaný). Pozor: přepsání anglického textu „zapomene" uložené chyby k tomu slovu — u ad-hoc testů přijatelné.
 - `index.json`: objekt `{ topics, categories }`. `topics` = pole `{ id, title, subtitle? }` (např. `unit6`, „Unit 6", „Umění a film"); `categories` = pole `{ id, file, title, topic }`, kde `topic` je `id` existujícího tématu (kategorie s neznámým tématem se přeskočí s varováním v konzoli).
 - Přidání lekce = nový `.txt` + řádek v `categories` (případně nové téma v `topics`), žádná změna kódu.
