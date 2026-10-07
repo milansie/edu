@@ -1,7 +1,7 @@
 # 6B Reading and Vocabulary (učebnice str. 85)
 annual = každoroční | výroční
 attract = přitáhnout | přilákat
-awesome = pozitivní (úžasný, skvělý)
+awesome = pozitivní | úžasný | skvělý
 awful = hrozný | strašný
 boring = nudný
 brief = stručný | krátký
