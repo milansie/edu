@@ -1,8 +1,8 @@
 # Bezpečnostní hlavičky pro Cloudflare Pages.
 # Web je čistě statický a nevolá nic mimo vlastní origin; CSP to vynucuje.
-# img-src data: — favicon v index.html je prázdné data: URI.
+# img-src 'self' — SVG obrázky a favicon jsou soubory v assets/, žádné data: URI.
 /*
-  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: no-referrer
