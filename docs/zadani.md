@@ -75,6 +75,7 @@ Příklady se generují při každém kole znovu. Typy převzaté z pracovního 
 | Porovnávání | 3/7 ? 5/7 (stejný jmenovatel nebo stejný čitatel) | `<` / `>` |
 | Část z celku | 3/5 z 120 = ? | celé číslo |
 | Na desetinné číslo | 3/4 = ? | desetinné číslo (uznává se `,` i `.`) |
+| Řazení | 3/8 1/2 1/4 5/8 → seřaď | pořadí ťuknutím |
 | Sčítání – stejný jmenovatel | 2/7 + 3/7 = ? | libovolný správný tvar (typ `value`) |
 | Sčítání – různý jmenovatel | 1/4 + 1/6 = ? | libovolný správný tvar (typ `value`) |
 
@@ -85,7 +86,7 @@ Připravené rozšíření: odčítání, násobení a dělení zlomků (typ odp
 - **Generátory** hlídají „hezká" čísla jako v pracovním listu: jmenovatele zhruba do 12–16 (u sčítání s různým jmenovatelem společný jmenovatel nejvýše 36), část z celku vychází celá, u desetinných jen jmenovatele s konečným rozvojem (2, 4, 5, 8, 10, 20, 25, 50, 100). Každý generátor vrací zadání, správnou odpověď a postup řešení.
 - **Výběr**: konkrétní kategorie, nebo „Náhodně" (všechny kategorie promíchané). Směr se u matematiky nevolí.
 - **Délka kola**: výchozí 10 příkladů, volitelně 20.
-- **Hra „Zápis"**: zlomky se vykreslují pod sebou (čitatel / čára / jmenovatel). Vstup přes vlastní klávesnici na obrazovce (0–9, `,`, ⌫, potvrdit) do políček podle typu odpovědi (celá část / čitatel / jmenovatel / číslo); u porovnávání dvě velká tlačítka `<` a `>`. Na desktopu funguje i fyzická klávesnice.
+- **Hra „Zápis"**: zlomky se vykreslují pod sebou (čitatel / čára / jmenovatel). Vstup přes vlastní klávesnici na obrazovce (0–9, `,`, ⌫, potvrdit) do políček podle typu odpovědi (celá část / čitatel / jmenovatel / číslo); u porovnávání dvě velká tlačítka `<` a `>`; u řazení se zlomky ťukají v pořadí od nejmenšího do čtyř políček (⌫ vrátí poslední, ✓ odešle; na klávesnici `1`–`4`). Na desktopu funguje i fyzická klávesnice.
 - **Vyhodnocení**: hodnota se porovnává matematicky, ne textově. Správná hodnota v nezkráceném tvaru, kde se chce základní tvar → neuznává se, hláška „Správně, ale ještě zkrať". Celé číslo zapsané jako zlomek (3/1) → neuznává se, hláška „Zapiš jako celé číslo". Smíšené číslo musí mít zlomkovou část menší než 1.
 - **Nápověda**: při procvičování jedné kategorie je nahoře vzor a pravidlo (z pracovního listu). V režimu „Náhodně" nápověda není.
 - **Po chybě** se ukáže správná odpověď i postup (např. `120 : 5 = 24, 24 · 3 = 72`). Postup je i ve výsledku kola u chybných příkladů.
