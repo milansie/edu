@@ -16,8 +16,8 @@ Specifikace: [zadani.md](zadani.md).
 
 ## Fáze 2 — psaní, pexeso, profily
 
-- [ ] Psaní + tolerance odpovědí (normalizace, diakritika, Levenshtein, ignorovat text v závorce) + testy
-- [ ] Předmět deklaruje jazyk každé strany (pro toleranci `a/an/to` a diakritiky)
+- [x] Psaní + tolerance odpovědí (normalizace, diakritika, Levenshtein, ignorovat text v závorce) + testy
+- [x] Předmět deklaruje jazyk každé strany (pro toleranci `a/an/to` a diakritiky)
 - [ ] Hláška při výběru kategorií bez slov (teď „Hrát" tiše nic neudělá)
 - [ ] Pexeso
 - [ ] Lokální profily (jméno + avatar)

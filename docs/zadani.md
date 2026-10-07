@@ -90,9 +90,11 @@ Připravené rozšíření: odčítání, násobení a dělení zlomků (typ odp
 3. **Psaní** — zadání v jednom jazyce, odpověď napsat ve druhém. Tolerance:
    - ignoruje velikost písmen, mezery na okrajích a vícenásobné mezery;
    - u angličtiny ignoruje úvodní `a` / `an` / `to` (na obou stranách porovnání);
+   - ignoruje text v závorce, koncové `…`/`...` a bere pomlčku jako mezeru (`record-breaking` = `record breaking`);
    - u češtiny chybějící diakritika = správně s upozorněním „pozor na háčky a čárky";
-   - překlep o 1 znak (Levenshtein) u slov od 4 znaků = „skoro, správně je …", počítá se jako správně, slovo se ale nezařazuje mezi úspěšně zvládnutá (zůstává v chybných, pokud tam bylo);
-   - uznává se kterákoliv z přijatelných odpovědí; při CZ→EN se uznává i jiné anglické slovo se stejným českým překladem.
+   - překlep o 1 znak (Levenshtein) u odpovědí od 4 znaků = chyba s mírnou hláškou „Skoro! Správně je …" a zvýrazněnými chybnými písmeny; počítá se jako chyba jako každá jiná;
+   - uznává se kterákoliv z přijatelných odpovědí; uznává se i jiná položka se shodným zadáním (synonyma, např. „film"/„movie" → „film").
+   - Jazyk každé strany deklaruje předmět (`langs`), podle něj se vyhodnocuje `a/an/to` a diakritika.
    - Vstup: `autocapitalize="off"`, `autocorrect="off"`, `spellcheck="false"`, Enter = potvrdit.
 4. **Pexeso** — otočené karty, hledají se dvojice EN–CZ. Po 6 párech na hrací plochu (3×4, vejde se na 360 px); větší sada = více ploch za sebou. Časovač ani nátlak.
 
