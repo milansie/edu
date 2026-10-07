@@ -10,9 +10,9 @@ const COMMA_TYPES = new Set(['decimal']);
  * Hra „Zápis“: odpověď se zapisuje do políček podle typu odpovědi (celá část / čitatel / jmenovatel /
  * číslo) vlastní klávesnicí na obrazovce nebo fyzickou klávesnicí; u porovnávání dvěma tlačítky `<` `>`.
  * Otázka nese `answerType`, `expected` a `display` (viz subjects/math). `options`:
- * `{ hint, onDone, onProgress }`, kde `hint` je `{ rule, example }` nebo null. Vrací `unmount()`.
+ * `{ hint, image, onDone, onProgress }`, kde `hint` je `{ rule, example }` nebo null a `image` je `{ src }` dekorativní postavy předmětu nebo null. Vrací `unmount()`.
  */
-export function mount(container, round, { hint, onDone, onProgress }) {
+export function mount(container, round, { hint, image, onDone, onProgress }) {
   let locked = false;
   let pendingNext = false;
   let timer = null;
@@ -53,7 +53,13 @@ export function mount(container, round, { hint, onDone, onProgress }) {
     solution = h(
       'div',
       { class: 'solution', hidden: true },
-      h('div', { class: 'solution-answer' }, h('span', { class: 'solution-label' }, 'Správně:'), renderParts(question.display.answer)),
+      h(
+        'div',
+        { class: 'solution-answer' },
+        image ? h('img', { class: 'solution-image', src: image.src, alt: '' }) : null,
+        h('span', { class: 'solution-label' }, 'Správně:'),
+        renderParts(question.display.answer),
+      ),
       h('ul', { class: 'steps' }, question.display.steps.map((step) => h('li', {}, step))),
     );
     nextButton = h('button', { type: 'button', class: 'btn btn-gold', hidden: true, onclick: () => next() }, 'Dál');

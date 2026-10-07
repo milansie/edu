@@ -6,10 +6,15 @@ function categoryCount(n) {
   return n >= 2 && n <= 4 ? `${n} kategorie` : `${n} kategorií`;
 }
 
-/** Výběr tématu předmětu: dlaždice s názvem, volitelným podtitulem a počtem kategorií. */
-export function render(container, { topics, categories, onPick }) {
+/** Výběr tématu předmětu: dlaždice s názvem, volitelným podtitulem a počtem kategorií; `image` (`{ src }`) je dekorativní postava předmětu vedle nadpisu. */
+export function render(container, { topics, categories, onPick, image = null }) {
   container.append(
-    h('h2', { class: 'hero' }, 'Téma'),
+    h(
+      'div',
+      { class: 'topic-head' },
+      h('h2', { class: 'hero' }, 'Téma'),
+      image ? h('img', { class: 'topic-image', src: image.src, alt: '' }) : null,
+    ),
     h(
       'div',
       { class: 'tile-grid' },

@@ -1,4 +1,5 @@
 import { h } from './ui/dom.js';
+import { renderSubjectName } from './ui/nickname.js';
 import { subjects, getSubject, getGame } from './registry.js';
 import { createRound } from './core/round.js';
 import { render as renderSubjects } from './screens/subjects.js';
@@ -34,8 +35,11 @@ function parseHash() {
   return { subjectId, topicId, screen };
 }
 
-/** Postaví rám obrazovky (header + obsah) a vrátí odkazy na jeho části. */
-function buildShell({ title, backHash }) {
+/**
+ * Postaví rám obrazovky (header + obsah) a vrátí odkazy na jeho části. `title` je text nebo uzly nadpisu; `null` nadpis vynechá.
+ * `image` (`{ src }` z registru) přidá k nadpisu dekorativní postavu předmětu.
+ */
+function buildShell({ title, backHash, image = null }) {
   const fill = h('div', { class: 'progress-fill' });
   const progress = h(
     'div',
@@ -48,7 +52,14 @@ function buildShell({ title, backHash }) {
     backHash
       ? h('button', { type: 'button', class: 'btn btn-orange btn-icon', 'aria-label': 'Zpět', onclick: () => navigate(backHash) }, '←')
       : null,
-    h('h1', { class: 'app-title' }, title),
+    title === null
+      ? null
+      : h(
+          'h1',
+          { class: 'app-title' },
+          image ? h('img', { class: 'app-title-image', src: image.src, alt: '' }) : null,
+          title,
+        ),
     progress,
   );
   const screen = h('div', { class: 'screen' });
@@ -65,7 +76,7 @@ function buildShell({ title, backHash }) {
 
 function showError(error) {
   console.error(error);
-  const { screen } = buildShell({ title: 'edu', backHash: '#/' });
+  const { screen } = buildShell({ title: 'Brajnkraft', backHash: '#/' });
   screen.append(h('div', { class: 'message-panel' }, 'Něco se nepovedlo. Zkus to prosím znovu.'));
 }
 
@@ -134,7 +145,7 @@ async function route() {
     const { subjectId, topicId, screen } = parseHash();
 
     if (!subjectId) {
-      const shell = buildShell({ title: 'edu', backHash: null });
+      const shell = buildShell({ title: null, backHash: null });
       renderSubjects(shell.screen, { subjects, onPick: (id) => navigate(`#/${id}`) });
       return;
     }
@@ -145,13 +156,15 @@ async function route() {
 
     const subject = await loadSubject(subjectId);
     if (token !== renderToken) return;
+    const entry = getSubject(subjectId);
+    const subjectImage = entry.image ?? null;
     const topicsHash = `#/${subjectId}`;
 
     if (!topicId) {
       const [topics, categories] = await Promise.all([subject.loadTopics(), subject.loadCategories()]);
       if (token !== renderToken) return;
-      const shell = buildShell({ title: subject.title, backHash: '#/' });
-      renderTopics(shell.screen, { topics, categories, onPick: (id) => navigate(`#/${subjectId}/${id}/setup`) });
+      const shell = buildShell({ title: renderSubjectName(entry), backHash: '#/', image: subjectImage });
+      renderTopics(shell.screen, { topics, categories, image: subjectImage, onPick: (id) => navigate(`#/${subjectId}/${id}/setup`) });
       return;
     }
 
@@ -172,13 +185,14 @@ async function route() {
       }
       const game = await getGame(state.play.settings.gameId).load();
       if (token !== renderToken) return;
-      const shell = buildShell({ title: subject.title, backHash: setupHash });
+      const shell = buildShell({ title: renderSubjectName(entry), backHash: setupHash, image: subjectImage });
       const { round, pool, hint } = state.play;
       cleanup = game.mount(shell.screen, round, {
         sides: subject.sides,
         langs: subject.langs,
         pool,
         hint,
+        image: subjectImage,
         onProgress: shell.setProgress,
         onDone: () => {
           state.result = { subjectId, topicId, summary: round.summary() };
@@ -193,7 +207,7 @@ async function route() {
         redirect(setupHash);
         return;
       }
-      const shell = buildShell({ title: 'Výsledek', backHash: setupHash });
+      const shell = buildShell({ title: 'Výsledek', backHash: setupHash, image: subjectImage });
       renderResult(shell.screen, {
         summary: state.result.summary,
         onRepeatWrong: () => repeatWrong(subject),
@@ -207,7 +221,7 @@ async function route() {
     const settingsKey = `${subjectId}/${topicId}`;
     state.settings[settingsKey] ??= defaultSettings(subject);
     const settings = state.settings[settingsKey];
-    const shell = buildShell({ title: topic.title, backHash: topicsHash });
+    const shell = buildShell({ title: topic.title, backHash: topicsHash, image: subjectImage });
     renderSetup(shell.screen, {
       subject,
       categories,

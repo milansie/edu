@@ -1,6 +1,7 @@
 import { h } from '../ui/dom.js';
 import { starsFor } from '../core/round.js';
 import { renderParts } from '../ui/math.js';
+import { pickResultQuip } from '../quips.js';
 
 const VERDICTS = {
   3: 'Výborně, takhle se to dělá.',
@@ -60,6 +61,12 @@ export function render(container, { summary, onRepeatWrong, onNewRound }) {
       ),
       h('p', { class: 'score' }, `${summary.correct} / ${summary.total}`),
       h('p', { class: 'verdict' }, VERDICTS[stars]),
+    ),
+    h(
+      'div',
+      { class: 'mascot' },
+      h('img', { class: 'mascot-image', src: 'assets/brajnik.svg', alt: 'Brajník', width: 16, height: 15 }),
+      h('p', { class: 'speech-bubble' }, pickResultQuip(summary.total > 0 ? summary.correct / summary.total : 0)),
     ),
   ];
 

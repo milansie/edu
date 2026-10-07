@@ -73,6 +73,47 @@ body {
   text-shadow: var(--shadow-text);
 }
 
+/* postava předmětu před názvem v headeru */
+.app-title-image {
+  display: inline-block;
+  width: var(--icon-sm-size);
+  height: var(--icon-sm-size);
+  margin-right: var(--space-2);
+  vertical-align: middle;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+/* přezdívka předmětu s učitelskou opravou překlepu: přeškrtnuté písmeno a červená oprava nad ním */
+.typo {
+  position: relative;
+  display: inline-block;
+}
+
+.typo-wrong {
+  text-decoration: line-through;
+  text-decoration-color: var(--color-red);
+  text-decoration-thickness: var(--typo-strike-w);
+}
+
+.typo-fix {
+  position: absolute;
+  top: var(--typo-fix-lift);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--typo-fix-size);
+  color: var(--color-red);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .progress {
   flex-basis: 100%;
   height: 18px;
@@ -206,6 +247,34 @@ body {
   line-height: 1;
 }
 
+.tile-image {
+  width: var(--tile-image-size);
+  height: var(--tile-image-size);
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+/* nadpis tématu s dekorativní postavou předmětu v rohu */
+.topic-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.topic-head .hero {
+  flex: 1;
+  min-width: 0;
+}
+
+.topic-image {
+  flex: none;
+  width: var(--topic-image-size);
+  height: var(--topic-image-size);
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
 .tile-stack {
   flex-direction: column;
   gap: var(--space-1);
@@ -276,6 +345,77 @@ body {
   text-transform: uppercase;
   color: var(--color-gold);
   text-shadow: 0 5px 0 var(--color-ink), 0 0 0 var(--color-ink);
+}
+
+.hero.brand {
+  font-size: var(--text-brand);
+  white-space: nowrap;
+}
+
+.brand-brajn {
+  color: var(--color-pink);
+}
+
+.brand-kraft {
+  color: var(--color-gold);
+}
+
+.hero-logo {
+  display: block;
+  width: var(--logo-size);
+  height: auto;
+  margin: var(--space-4) auto 0;
+  image-rendering: pixelated;
+}
+
+.mascot {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-4);
+}
+
+.mascot-image {
+  flex: none;
+  width: var(--mascot-size);
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.speech-bubble {
+  position: relative;
+  flex: 1;
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3);
+  background: var(--color-panel);
+  border: var(--border-w) solid var(--color-ink);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+/* ocásek bubliny mířící na maskota: inkoustový trojúhelník + menší panelový přes okraj bubliny */
+.speech-bubble::before,
+.speech-bubble::after {
+  content: "";
+  position: absolute;
+  border: solid transparent;
+  border-left-width: 0;
+}
+
+.speech-bubble::before {
+  right: calc(100% + var(--border-w));
+  bottom: var(--space-3);
+  border-width: var(--space-3) var(--space-3) var(--space-3) 0;
+  border-right-color: var(--color-ink);
+}
+
+.speech-bubble::after {
+  right: calc(100% - 1px);
+  bottom: calc(var(--space-3) + var(--border-w));
+  border-width: var(--space-2) var(--space-3) var(--space-2) 0;
+  border-right-color: var(--color-panel);
 }
 
 .hero-sub {

@@ -32,6 +32,9 @@
   --color-blue: #2f6fe0;
   --color-blue-light: #6b9bff;
   --color-blue-dark: #1b3f9a;
+  --color-pink: #ff8ab8;
+  --color-pink-light: #ffc0da;
+  --color-pink-dark: #d44a85;
   --color-stone: #e6dfc8;
   --color-stone-light: #fbf7e8;
   --color-stone-dark: #b5a97f;
@@ -47,6 +50,7 @@
   --text-md: 1.05rem;
   --text-lg: 1.35rem;
   --text-xl: 2rem;
+  --text-brand: clamp(1.9rem, 10vw, 3rem);
   --text-card: clamp(1.6rem, 7vw, 2.4rem);
   --text-card-long: clamp(1rem, 4.5vw, 1.35rem);
 
@@ -59,6 +63,14 @@
   --tap-min: 56px;
   --max-width: 520px;
   --pixel-size: 48px;
+  --logo-size: 72px;
+  --mascot-size: 96px;
+  --tile-image-size: 64px;
+  --icon-sm-size: 32px;
+  --topic-image-size: 96px;
+  --typo-fix-size: 0.7em;
+  --typo-fix-lift: -0.55em;
+  --typo-strike-w: 0.14em;
 
   --flip-duration: 0.5s;
   --focus-ring: 0 0 0 4px var(--color-white), 0 0 0 8px var(--color-ink);
