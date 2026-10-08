@@ -1,6 +1,6 @@
 /**
  * Jediné místo registrace předmětů a typů her.
- * Předmět: `{ id, title, icon, image?, nickname?, load() → subject }` (`image` = `{ src, alt }` postavy, `alt` je jméno postavy (metadata, jako alt textu se nepoužívá, protože obrázky jsou dekorativní); bez něj se zobrazí textová `icon`;
+ * Předmět: `{ id, title, icon, image?, nickname?, load() → subject }` (`image` = `{ src, alt }` postavy, `alt` je jméno postavy zobrazované v nápovědě a u výběru témat (jako alt text se nepoužívá, obrázky jsou dekorativní); bez něj se zobrazí textová `icon`;
  * `nickname` = pole částí přezdívky: řetězec, nebo `{ wrong, fix }` pro přeškrtnutý překlep s opravou; bez něj se zobrazí `title`), kde subject má tvar
  * `{ id, title, sides, langs?, games, loadTopics(), loadCategories(), loadItems(categoryIds) }`. Předmět s generovanými
  * příklady místo `loadItems` nabízí `generate(categoryIds, count)` a `makeQuestion(item)`; volitelně
@@ -33,6 +33,14 @@ export const subjects = [
     icon: 'DĚJ',
     image: { src: 'assets/pizzarius.svg', alt: 'Pizzarius Maximus' },
     load: () => import('../subjects/history/subject.js').then((m) => m.subject),
+  },
+  {
+    id: 'geo',
+    title: 'Zeměpis',
+    nickname: ['Zeměkoulo\u00ADpis'],
+    icon: 'ZEM',
+    image: { src: 'assets/kapitan-kompas.svg', alt: 'Kapitán Kompas' },
+    load: () => import('../subjects/geo/subject.js').then((m) => m.subject),
   },
 ];
 

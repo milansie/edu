@@ -1,0 +1,8 @@
+{
+  "topics": [
+    { "id": "biomy", "title": "Biomy" }
+  ],
+  "categories": [
+    { "id": "biomy", "file": "biomy.csv", "title": "Biomy", "topic": "biomy" }
+  ]
+}
