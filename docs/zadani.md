@@ -62,6 +62,10 @@ Kdo založil Řím podle pověsti?;Romulus.
 - Počet otázek v kole: 10 / 20 / 30, výchozí 30 (z velké sady se náhodně vybere). Dlouhý text na kartě se zobrazí menším písmem.
 - Identita kartičky = kategorie + otázka (normalizovaná).
 
+## Zeměpis — data
+
+Téma „Biomy" (jedna kategorie „Biomy", `biomy.csv`) jako kartičky, stejně jako dějepis: CSV `Otázka;Odpověď` v `subjects/geo/data/`, seznam témat a kategorií v `subjects/geo/data/index.json`. Formát, parser (sdílený `subjects/history/parse.js`), počty otázek v kole i identita kartičky jsou stejné jako u dějepisu; nové kategorie se přidávají jen datově.
+
 ## Matematika — zlomky
 
 Příklady se generují při každém kole znovu. Typy převzaté z pracovního listu (6. ročník), každý typ = jedna kategorie ve skupině „Zlomky":
@@ -132,8 +136,9 @@ Skóre, 1–3 hvězdy podle úspěšnosti, seznam chybných slov se správnou od
 
 - **Identita**: název Brajnkraft, pixel-art logo mozku (`assets/logo-brain.svg`, použité i jako favicon).
 - **Maskot Brajník** s náhodnými hláškami na úvodní obrazovce a hláškami podle pásma skóre na výsledku kola (`js/quips.js`, čistá logika s testy).
-- **Postavy předmětů** v `assets/` (čistě dekorativní obrázky, `alt=""`): Tea-Rex (angličtina), Kalkulátoro Zlomkini (matematika), Pizzarius Maximus (dějepis).
-- **Přezdívky předmětů** na dlaždicích: Engliš, Matyka (s přeškrtnutým „y" opraveným na „i"), Děják.
+- **Postavy předmětů** v `assets/` (čistě dekorativní obrázky, `alt=""`): Tea-Rex (angličtina), Kalkulátoro Zlomkini (matematika), Pizzarius Maximus (dějepis), Kapitán Kompas (zeměpis).
+- **Přezdívky předmětů** na dlaždicích: Engliš, Matyka (s přeškrtnutým „y" opraveným na „i"), Děják, Zeměkoulopis.
+- **Jména postav** jsou vidět v textu: v nápovědě u matematiky („Kalkulátoro Zlomkini radí:") a pod obrázkem postavy na obrazovce výběru tématu.
 - V `js/registry.js` má předmět volitelná pole `image` (`{ src, alt }`, `alt` = jméno postavy) a `nickname` (pole částí; část `{ wrong, fix }` = přeškrtnutý překlep s opravou). Bez nich se zobrazí textová ikona a `title`.
 
 - Barevně a hravě, spíš „klučičí" styl — inspirace Minecraft / Brawl Stars (sytě barevné bloky, výrazné obrysy, pixelový font na nadpisy, čitelný font na obsah). Ne pastelové/jednorožcové.

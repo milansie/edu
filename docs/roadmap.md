@@ -41,6 +41,11 @@ Specifikace: [zadani.md](zadani.md).
 - [ ] Další témata (nové CSV + řádek v `index.json`)
 - [ ] Sjednocení loaderu s angličtinou do obecného předmětu „páry"
 
+## Zeměpis
+
+- [x] Zeměpis — připravovaná dlaždice (přezdívka Zeměkoulopis) a postava Kapitán Kompas, jména postav v nápovědě a u výběru témat
+- [x] Zeměpis — data a kategorie (téma Biomy, kategorie Biomy), kartičky
+
 ## Fáze 3 — nasazení
 
 - [x] `_headers` (CSP a security hlavičky)
