@@ -12,7 +12,7 @@ const COMMA_TYPES = new Set(['decimal']);
  * číslo) vlastní klávesnicí na obrazovce nebo fyzickou klávesnicí; u porovnávání dvěma tlačítky `<` `>`,
  * u řazení ťukáním na zlomky v pořadí (klávesy `1`–`4`, Backspace vrací poslední).
  * Otázka nese `answerType`, `expected` a `display` (viz subjects/math). `options`:
- * `{ hint, image, onDone, onProgress }`, kde `hint` je `{ rule, example }` nebo null a `image` je `{ src }` dekorativní postavy předmětu nebo null. Vrací `unmount()`.
+ * `{ hint, image, onDone, onProgress }`, kde `hint` je `{ rule, example }` nebo null a `image` je `{ src, alt }` postavy předmětu (`alt` = jméno zobrazené v nápovědě) nebo null. Vrací `unmount()`.
  */
 export function mount(container, round, { hint, image, onDone, onProgress }) {
   let locked = false;
@@ -100,7 +100,7 @@ export function mount(container, round, { hint, image, onDone, onProgress }) {
     return h(
       'div',
       { class: 'hint-card' },
-      h('span', { class: 'hint-label' }, 'Vzor:'),
+      h('span', { class: 'hint-label' }, image?.alt ? `${image.alt} radí:` : 'Vzor:'),
       renderParts(hint.example),
       h('p', { class: 'hint-rule' }, hint.rule),
     );
