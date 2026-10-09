@@ -87,6 +87,8 @@ Typ odpovědi `value` (políčka celá část – nepovinná, čitatel, jmenovat
 
 Připravené rozšíření: odčítání, násobení a dělení zlomků (typ odpovědi `value`).
 
+**Obtížnost 1–5**: úroveň se volí posuvníkem v nastavení kola (popisky 1–5), výchozí je 1 = základní chování popsané výše. Vyšší úrovně zvětšují jmenovatele, činitele, celé části a násobky (každá kategorie má tabulku parametrů ve svém souboru) a přidávají těžší varianty: porovnávání od úrovně 3 se zlomky s různými jmenovateli a na úrovni 5 s těsnými dvojicemi (7/8 a 8/9); řazení od úrovně 3 s různými jmenovateli, od 4 jen s navzájem různými jmenovateli a na 5 s blízkými hodnotami; část z celku od úrovně 4 i s nepravými zlomky (5/4 z 36); převod na desetinné číslo s větším podílem nepravých zlomků a od úrovně 4 se jmenovateli 16, 40, 125, 200; sčítání se stejným jmenovatelem od úrovně 4 občas se třemi sčítanci; sčítání s různým jmenovatelem s většími jmenovateli a na úrovni 5 převážně nesoudělnými. Podmínky „hezkých" čísel výše platí pro úroveň 1.
+
 - **Generátory** hlídají „hezká" čísla jako v pracovním listu: jmenovatele zhruba do 12–16 (u sčítání s různým jmenovatelem společný jmenovatel nejvýše 36), část z celku vychází celá, u desetinných jen jmenovatele s konečným rozvojem (2, 4, 5, 8, 10, 20, 25, 50, 100). Každý generátor vrací zadání, správnou odpověď a postup řešení.
 - **Výběr**: konkrétní kategorie, nebo „Náhodně" (všechny kategorie promíchané). Směr se u matematiky nevolí.
 - **Délka kola**: výchozí 10 příkladů, volitelně 20.
@@ -102,6 +104,7 @@ Připravené rozšíření: odčítání, násobení a dělení zlomků (typ odp
 - **Kategorie**: jedna, více, nebo vše (v rámci zvoleného tématu).
 - **Směr**: EN→CZ, CZ→EN, oba (pak se směr losuje po otázkách).
 - **Typ hry**: kartičky, výběr ze 4, psaní, pexeso.
+- **Obtížnost** (jen předměty s úrovněmi, dnes matematika): posuvník 1–5, výchozí 1.
 - **Počet otázek**: defaultně celá výběrová sada, volitelně omezit (např. 10 / 20).
 - Slova, ve kterých profil dřív chyboval, se do kola zařazují přednostně (při omezení počtu mají přednost, jinak jdou na začátek).
 - Chybně zodpovězené slovo se v rámci kola jednou vrátí na konec fronty.

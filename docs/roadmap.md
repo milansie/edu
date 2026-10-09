@@ -32,6 +32,7 @@ Specifikace: [zadani.md](zadani.md).
 - [x] Vzor a pravidlo u jedné kategorie
 - [x] Sčítání zlomků (stejný a různý jmenovatel, typ odpovědi `value`)
 - [x] Řazení zlomků (4 zlomky od nejmenšího, pořadí ťuknutím)
+- [x] Obtížnost zlomků 1–5 (posuvník v nastavení kola)
 - [ ] Později: odčítání, násobení, dělení zlomků
 
 ## Dějepis
