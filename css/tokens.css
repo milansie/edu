@@ -61,6 +61,9 @@
   --shadow-text: 0 3px 0 var(--color-ink);
 
   --tap-min: 56px;
+  --level-thumb-w: 40px;
+  --level-thumb-h: 48px;
+  --level-track-h: 16px;
   --max-width: 520px;
   --pixel-size: 48px;
   --logo-size: 72px;

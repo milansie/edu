@@ -312,6 +312,111 @@ body {
   padding-inline: var(--space-2);
 }
 
+/* Posuvník obtížnosti: dráha a jezdec ve stylu tlačítek, popisky zarovnané na zarážky */
+.level-picker {
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  background: var(--color-panel);
+  border: var(--border-w) solid var(--color-ink);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+
+.level-slider {
+  display: block;
+  width: 100%;
+  height: var(--tap-min);
+  margin: 0;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+
+.level-slider:focus-visible {
+  outline: none;
+}
+
+.level-slider::-webkit-slider-runnable-track {
+  height: var(--level-track-h);
+  background: var(--color-track);
+  border: var(--border-w) solid var(--color-ink);
+  border-radius: var(--radius);
+  box-sizing: content-box;
+}
+
+.level-slider::-moz-range-track {
+  height: var(--level-track-h);
+  background: var(--color-track);
+  border: var(--border-w) solid var(--color-ink);
+  border-radius: var(--radius);
+  box-sizing: content-box;
+}
+
+.level-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: var(--level-thumb-w);
+  height: var(--level-thumb-h);
+  margin-top: calc((var(--level-track-h) + 2 * var(--border-w) - var(--level-thumb-h)) / 2 - var(--border-w));
+  background: var(--color-green);
+  border: var(--border-w) solid var(--color-ink);
+  border-radius: var(--radius);
+  box-sizing: border-box;
+  box-shadow:
+    0 var(--shadow-depth) 0 var(--color-ink),
+    inset 0 4px 0 var(--color-green-light),
+    inset 0 -4px 0 var(--color-green-dark);
+}
+
+.level-slider::-moz-range-thumb {
+  width: var(--level-thumb-w);
+  height: var(--level-thumb-h);
+  background: var(--color-green);
+  border: var(--border-w) solid var(--color-ink);
+  border-radius: var(--radius);
+  box-sizing: border-box;
+  box-shadow:
+    0 var(--shadow-depth) 0 var(--color-ink),
+    inset 0 4px 0 var(--color-green-light),
+    inset 0 -4px 0 var(--color-green-dark);
+}
+
+.level-slider:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    0 var(--shadow-depth) 0 var(--color-ink),
+    inset 0 4px 0 var(--color-green-light),
+    inset 0 -4px 0 var(--color-green-dark),
+    var(--focus-ring);
+}
+
+.level-slider:focus-visible::-moz-range-thumb {
+  box-shadow:
+    0 var(--shadow-depth) 0 var(--color-ink),
+    inset 0 4px 0 var(--color-green-light),
+    inset 0 -4px 0 var(--color-green-dark),
+    var(--focus-ring);
+}
+
+.level-ticks {
+  display: flex;
+  justify-content: space-between;
+}
+
+.level-ticks span {
+  flex: 0 0 var(--level-thumb-w);
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: var(--text-md);
+  color: var(--color-stone-dark);
+}
+
+.level-ticks span.is-on {
+  color: var(--color-ink);
+  font-size: var(--text-lg);
+}
+
 .section-title {
   margin: 0 0 var(--space-2);
   font-family: var(--font-display);

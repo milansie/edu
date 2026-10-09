@@ -8,7 +8,7 @@ const DEFAULT_LIMITS = [
 
 /**
  * Nastavení kola pro kategorie jednoho tématu (`categories`). Předmět může volitelně dodat `limits` (počty otázek), `allLabel` (text dlaždice „Vše“)
- * a vynechat `sides` (pak se nenabízí směr). `settings` (`{ categoryIds, direction, gameId, limit }`) se mění přímo,
+ * a vynechat `sides` (pak se nenabízí směr). Má-li předmět `levels`, nabídne se posuvník obtížnosti 1–`levels`. `settings` (`{ categoryIds, direction, gameId, limit, level? }`) se mění přímo,
  * takže při návratu na obrazovku zůstane výběr zachován.
  */
 export function render(container, { subject, categories, games, settings, onStart }) {
@@ -148,6 +148,30 @@ export function render(container, { subject, categories, games, settings, onStar
     ),
   );
 
+  const levelSlider = h('input', {
+    type: 'range',
+    class: 'level-slider',
+    min: 1,
+    max: subject.levels,
+    step: 1,
+    value: settings.level,
+    'aria-label': 'Obtížnost',
+    oninput: (e) => {
+      settings.level = Number(e.target.value);
+      refreshLevel();
+    },
+  });
+  const levelTicks = Array.from({ length: subject.levels ?? 0 }, (_, i) => h('span', {}, String(i + 1)));
+  const refreshLevel = () => {
+    levelTicks.forEach((tick, i) => tick.classList.toggle('is-on', i + 1 === settings.level));
+  };
+  const levelSection = h(
+    'section',
+    {},
+    h('h3', { class: 'section-title' }, 'Obtížnost'),
+    h('div', { class: 'level-picker' }, levelSlider, h('div', { class: 'level-ticks', 'aria-hidden': 'true' }, levelTicks)),
+  );
+
   const startButton = h(
     'button',
     { type: 'button', class: 'btn btn-green', onclick: () => onStart() },
@@ -161,9 +185,11 @@ export function render(container, { subject, categories, games, settings, onStar
       categorySection,
       subject.sides ? directionSection : null,
       games.length > 1 ? gameSection : null,
+      subject.levels ? levelSection : null,
       limitSection,
     ),
     h('div', { class: 'screen-footer' }, startButton),
   );
   refresh();
+  if (subject.levels) refreshLevel();
 }

@@ -81,7 +81,9 @@ function showError(error) {
 }
 
 function defaultSettings(subject) {
-  return { categoryIds: [], direction: subject.sides ? 'both' : 'ab', gameId: subject.games[0], limit: subject.defaultLimit ?? 0 };
+  const settings = { categoryIds: [], direction: subject.sides ? 'both' : 'ab', gameId: subject.games[0], limit: subject.defaultLimit ?? 0 };
+  if (subject.levels) settings.level = subject.defaultLevel ?? 1;
+  return settings;
 }
 
 /** Nápověda kategorie, je-li vybraná právě jedna a předmět nápovědy nabízí. */
@@ -98,7 +100,7 @@ async function startRound(subject, topicId, settings) {
       settings: { ...settings },
       pool: null,
       hint: hintFor(subject, settings),
-      round: createRound(subject.generate(settings.categoryIds, settings.limit), {
+      round: createRound(subject.generate(settings.categoryIds, settings.limit, { level: settings.level }), {
         limit: settings.limit,
         makeQuestion: subject.makeQuestion,
       }),

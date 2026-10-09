@@ -4,7 +4,8 @@
  * `nickname` = pole částí přezdívky: řetězec, nebo `{ wrong, fix }` pro přeškrtnutý překlep s opravou; bez něj se zobrazí `title`), kde subject má tvar
  * `{ id, title, sides, langs?, games, loadTopics(), loadCategories(), loadItems(categoryIds) }`. Předmět s generovanými
  * příklady místo `loadItems` nabízí `generate(categoryIds, count)` a `makeQuestion(item)`; volitelně
- * `hintFor(categoryId)`, `limits`, `defaultLimit`, `allLabel`; bez `sides` se nenabízí směr
+ * `hintFor(categoryId)`, `limits`, `defaultLimit`, `allLabel`, `levels` (počet úrovní obtížnosti; nabídne posuvník) s `defaultLevel`
+ * a `generate(categoryIds, count, { level })`; bez `sides` se nenabízí směr
  * a kola mají směr 'ab'; předmět s jedinou hrou v `games` nenabízí volbu hry.
  * Předmět bez `load` je připravovaný: zobrazí se jako neaktivní dlaždice a nejde otevřít.
  * Hra: `{ id, title, icon, load() → { mount(container, round, options) → unmount } }`.
