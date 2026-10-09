@@ -1,4 +1,4 @@
-import { gcd, reduce } from '../../../js/core/fraction.js';
+import { gcd, lcm, reduce } from '../../../js/core/fraction.js';
 
 /**
  * Pomocné funkce generátorů. Části zápisu (`parts`) popisují vykreslitelný výraz:
@@ -61,4 +61,33 @@ export function valueResult(n, d) {
     answer = [frac(expected.n, expected.d)];
   }
   return { expected, answer, steps };
+}
+
+/**
+ * Řádek tabulky parametrů pro úroveň obtížnosti 1–5 (`table[0]` = úroveň 1). Úroveň mimo rozsah se ořízne
+ * do 1–5, nečíselná hodnota (undefined, NaN, text) znamená úroveň 1.
+ */
+export function levelOf(table, level) {
+  const n = Math.trunc(Number(level));
+  return table[(Number.isFinite(n) ? Math.min(5, Math.max(1, n)) : 1) - 1];
+}
+
+const pairCache = new Map();
+
+/**
+ * Uspořádané dvojice různých jmenovatelů z <2, maxD>, jejichž společný jmenovatel nepřesahuje `maxCommon`
+ * (s `coprimeOnly` jen nesoudělné dvojice). Výsledek je pro stejné argumenty sdílený, nemodifikuj ho.
+ */
+export function denominatorPairs(maxD, maxCommon, coprimeOnly = false) {
+  const key = `${maxD}/${maxCommon}/${coprimeOnly}`;
+  if (!pairCache.has(key)) {
+    const pairs = [];
+    for (let a = 2; a <= maxD; a++) {
+      for (let b = 2; b <= maxD; b++) {
+        if (a !== b && lcm(a, b) <= maxCommon && (!coprimeOnly || gcd(a, b) === 1)) pairs.push([a, b]);
+      }
+    }
+    pairCache.set(key, pairs);
+  }
+  return pairCache.get(key);
 }

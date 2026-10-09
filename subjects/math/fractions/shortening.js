@@ -1,6 +1,15 @@
-import { makeItem, frac, text, randInt, coprimeBelow } from './helpers.js';
+import { makeItem, frac, text, randInt, coprimeBelow, levelOf } from './helpers.js';
 
 const INTEGER_SHARE = 0.2;
+
+/** Parametry úrovní 1–5: největší jmenovatel základního tvaru a největší činitel krácení (u celočíselného výsledku největší podíl). */
+const LEVELS = [
+  { maxD: 12, maxFactor: 9 },
+  { maxD: 15, maxFactor: 9 },
+  { maxD: 20, maxFactor: 12 },
+  { maxD: 25, maxFactor: 15 },
+  { maxD: 30, maxFactor: 20 },
+];
 
 export default {
   id: 'shortening',
@@ -13,10 +22,11 @@ export default {
   },
 
   /** Zadání je vždy krátitelné; zhruba pětina příkladů vychází jako celé číslo (72/8). */
-  generate(rng) {
+  generate(rng, level = 1) {
+    const { maxD, maxFactor } = levelOf(LEVELS, level);
     if (rng() < INTEGER_SHARE) {
-      const d = randInt(rng, 2, 12);
-      const q = randInt(rng, 2, 9);
+      const d = randInt(rng, 2, maxD);
+      const q = randInt(rng, 2, maxFactor);
       const n = q * d;
       return makeItem(
         this.id,
@@ -27,9 +37,9 @@ export default {
         [`${n} : ${d} = ${q}`],
       );
     }
-    const d = randInt(rng, 2, 12);
+    const d = randInt(rng, 2, maxD);
     const n = coprimeBelow(rng, d);
-    const g = randInt(rng, 2, 9);
+    const g = randInt(rng, 2, maxFactor);
     return makeItem(
       this.id,
       this.answerType,

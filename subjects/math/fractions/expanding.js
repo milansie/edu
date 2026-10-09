@@ -1,4 +1,13 @@
-import { makeItem, frac, text, randInt } from './helpers.js';
+import { makeItem, frac, text, randInt, levelOf } from './helpers.js';
+
+/** Parametry úrovní 1–5: největší jmenovatel zadání a největší činitel rozšíření. */
+const LEVELS = [
+  { maxD: 12, maxFactor: 9 },
+  { maxD: 15, maxFactor: 10 },
+  { maxD: 20, maxFactor: 12 },
+  { maxD: 25, maxFactor: 15 },
+  { maxD: 30, maxFactor: 20 },
+];
 
 export default {
   id: 'expanding',
@@ -11,10 +20,11 @@ export default {
   },
 
   /** Zadání nemusí být v základním tvaru (5/10); odpověď se posuzuje přesně. */
-  generate(rng) {
-    const d = randInt(rng, 2, 12);
+  generate(rng, level = 1) {
+    const { maxD, maxFactor } = levelOf(LEVELS, level);
+    const d = randInt(rng, 2, maxD);
     const n = randInt(rng, 1, d - 1);
-    const k = randInt(rng, 2, 9);
+    const k = randInt(rng, 2, maxFactor);
     return makeItem(
       this.id,
       this.answerType,

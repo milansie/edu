@@ -1,17 +1,17 @@
 import { lcm } from '../../../js/core/fraction.js';
-import { makeItem, frac, text, pick, coprimeBelow, valueResult } from './helpers.js';
+import { makeItem, frac, text, pick, coprimeBelow, valueResult, levelOf, denominatorPairs } from './helpers.js';
 
-const MIN_DENOMINATOR = 2;
-const MAX_DENOMINATOR = 12;
-const MAX_COMMON = 36;
-
-/** Uspořádané dvojice různých jmenovatelů, jejichž společný jmenovatel nepřesahuje 36. */
-const DENOMINATOR_PAIRS = [];
-for (let a = MIN_DENOMINATOR; a <= MAX_DENOMINATOR; a++) {
-  for (let b = MIN_DENOMINATOR; b <= MAX_DENOMINATOR; b++) {
-    if (a !== b && lcm(a, b) <= MAX_COMMON) DENOMINATOR_PAIRS.push([a, b]);
-  }
-}
+/**
+ * Parametry úrovní 1–5: největší jmenovatel sčítance, největší společný jmenovatel a podíl příkladů,
+ * které mají nesoudělné jmenovatele (u ostatních jsou jmenovatele soudělní i nesoudělní).
+ */
+const LEVELS = [
+  { maxD: 12, maxCommon: 36, coprimeShare: 0 },
+  { maxD: 15, maxCommon: 48, coprimeShare: 0 },
+  { maxD: 20, maxCommon: 60, coprimeShare: 0 },
+  { maxD: 24, maxCommon: 90, coprimeShare: 0 },
+  { maxD: 30, maxCommon: 120, coprimeShare: 0.7 },
+];
 
 export default {
   id: 'add-diff',
@@ -24,8 +24,10 @@ export default {
   },
 
   /** Sčítance jsou vlastní zlomky v základním tvaru s různými jmenovateli (soudělnými i nesoudělnými). */
-  generate(rng) {
-    const [d1, d2] = pick(rng, DENOMINATOR_PAIRS);
+  generate(rng, level = 1) {
+    const { maxD, maxCommon, coprimeShare } = levelOf(LEVELS, level);
+    const coprime = coprimeShare > 0 && rng() < coprimeShare;
+    const [d1, d2] = pick(rng, denominatorPairs(maxD, maxCommon, coprime));
     const a = coprimeBelow(rng, d1);
     const b = coprimeBelow(rng, d2);
     const common = lcm(d1, d2);

@@ -20,6 +20,8 @@ export const subject = {
   limits: [10, 20],
   defaultLimit: DEFAULT_COUNT,
   allLabel: 'Náhodně',
+  levels: 5,
+  defaultLevel: 1,
 
   /** Vrací `[{ id, title, subtitle? }]` témat předmětu. */
   async loadTopics() {
@@ -38,17 +40,18 @@ export const subject = {
 
   /**
    * Vygeneruje `count` příkladů (výchozí 10) z vybraných kategorií: kategorie se střídají
-   * rovnoměrně a v náhodném pořadí, duplicitní zadání se přegenerují (nejvýš 20×).
+   * rovnoměrně a v náhodném pořadí, duplicitní zadání se přegenerují (nejvýš 20×). `level` je obtížnost 1–5
+   * (mimo rozsah se ořízne, neplatná hodnota = 1), `rng` zdroj náhody (pro testy).
    */
-  generate(categoryIds, count, rng = Math.random) {
+  generate(categoryIds, count, { rng = Math.random, level = 1 } = {}) {
     const chosen = categoryIds.map((id) => byId.get(id)).filter(Boolean);
     if (chosen.length === 0) return [];
     const total = count > 0 ? count : DEFAULT_COUNT;
     const order = shuffle(Array.from({ length: total }, (_, i) => chosen[i % chosen.length]), rng);
     const seen = new Set();
     return order.map((category) => {
-      let item = category.generate(rng);
-      for (let retry = 0; seen.has(item.id) && retry < MAX_DUPLICATE_RETRIES; retry++) item = category.generate(rng);
+      let item = category.generate(rng, level);
+      for (let retry = 0; seen.has(item.id) && retry < MAX_DUPLICATE_RETRIES; retry++) item = category.generate(rng, level);
       seen.add(item.id);
       return item;
     });
