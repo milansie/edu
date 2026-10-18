@@ -17,6 +17,7 @@ export const quips = [
   'Dneska to bude sigma procvičování.',
   'Nulou dělit nejde. Zkus to a vesmír zakašle.',
   'Zelený tyranosaurus pije čaj. Ty se učíš. Fér.',
+  'Sir Isaac Gravitón říká: jablko padá dolů, hustota se počítá nahoru.',
   'Jedno kolo a pak třeba pauza. Dohoda?',
 ];
 

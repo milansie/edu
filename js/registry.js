@@ -43,6 +43,14 @@ export const subjects = [
     image: { src: 'assets/kapitan-kompas.svg', alt: 'Kapitán Kompas' },
     load: () => import('../subjects/geo/subject.js').then((m) => m.subject),
   },
+  {
+    id: 'physics',
+    title: 'Fyzika',
+    nickname: ['Physique'],
+    icon: 'FYZ',
+    image: { src: 'assets/isaac-graviton.svg', alt: 'Sir Isaac Gravitón' },
+    load: () => import('../subjects/physics/subject.js').then((m) => m.subject),
+  },
 ];
 
 export const games = [
