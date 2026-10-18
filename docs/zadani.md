@@ -98,13 +98,33 @@ Připravené rozšíření: odčítání, násobení a dělení zlomků (typ odp
 - **Po chybě** se ukáže správná odpověď i postup (např. `120 : 5 = 24, 24 · 3 = 72`). Postup je i ve výsledku kola u chybných příkladů.
 - Obtížnost zatím jedna úroveň.
 
+## Fyzika — hustota
+
+Příklady se generují při každém kole znovu (předmět Fyzika, postava Sir Isaac Gravitón, přezdívka Physique), jediné téma „Hustota" s kategoriemi:
+
+| Kategorie | Zadání | Odpověď |
+|---|---|---|
+| Převody jednotek | 2,5 l = ? ml (hmotnost, objem, od úrovně 4 i hustota) | desetinné číslo (typ `decimal`) |
+| Výpočet hustoty | z hmotnosti a objemu, „hustotu zapiš v kg/m³" | desetinné číslo |
+| Výpočet hmotnosti | z hustoty a objemu | desetinné číslo |
+| Výpočet objemu | z hmotnosti a hustoty | desetinné číslo |
+| Z čeho je předmět | hmotnost a objem předmětu + nabídka 4 materiálů s hustotami | název materiálu (typ `text`) |
+
+- **Jednotky**: hmotnost g, kg, t; objem cm³, ml, l, dm³, m³; hustota g/cm³, kg/l, kg/dm³, kg/m³. Veškerá aritmetika je přes zlomky (`js/core/fraction.js`), žádné floaty; jednotky a převody jsou v `subjects/physics/units.js`.
+- **„Hezká" čísla**: generátory počítají odzadu (zvolí se hustota a objem, hmotnost vyjde přesně); zadané hodnoty i výsledek mají nejvýš 1 desetinné místo a vejdou se do políčka odpovědi (celá část nejvýš 6 číslic, celý zápis nejvýš 7 znaků), jinak se hodnoty přegenerují.
+- **Slovní úlohy**: zhruba polovina zadání je s příběhem Sira Isaaca; u hmotnosti a objemu s materiálem z tabulky (`subjects/physics/materials.js`: korek, smrkové dřevo, benzín, led, voda, beton, sklo, hliník, titan, zinek, cín, železo, měď, stříbro, olovo, rtuť, zlato, platina; každý s hustotou v g/cm³ a skupenstvím). Hustoty v tabulce jsou navzájem různé. Úlohy „z čeho je předmět" nabízejí 4 materiály s hustotami lišícími se po dvou nejméně o 0,5 g/cm³.
+- **Typ odpovědi `text`**: jedno textové pole (místo klávesnice s číslicemi); `expected` je pole uznávaných názvů, porovnává se bez diakritiky a velikosti písmen (`zelezo` = `Železo`). Typ je obecný a hra „Zápis" ho podporuje pro libovolný předmět.
+- **Obtížnost 1–5**: 1 = g + cm³ (resp. kg + dm³) bez převodů, celá čísla v zadání; 2 = i ml a l, zadání s 1 desetinným místem; 3 = jeden převod (kg↔g, l↔cm³, dm³↔cm³); 4 = i m³ a t, hustota většinou v kg/m³, převody g/cm³ ↔ kg/m³; 5 = libovolná kombinace jednotek, dva i více převodů.
+- **Po chybě** se ukáže správná odpověď a postup (převod jednotek, dosazení do vzorce, výsledek; u „z čeho je" i „ρ = 7,1 g/cm³ → zinek").
+- **Nápověda** (při jedné vybrané kategorii): vzorec ρ = m / V (resp. m = ρ · V, V = m / ρ) a převodní vztahy jednotek.
+
 ## Nastavení kola
 
 - **Téma**: před nastavením kola se vybírá téma předmětu (obrazovka se ukazuje i při jediném tématu); nastavení nabízí jen kategorie zvoleného tématu.
 - **Kategorie**: jedna, více, nebo vše (v rámci zvoleného tématu).
 - **Směr**: EN→CZ, CZ→EN, oba (pak se směr losuje po otázkách).
 - **Typ hry**: kartičky, výběr ze 4, psaní, pexeso.
-- **Obtížnost** (jen předměty s úrovněmi, dnes matematika): posuvník 1–5, výchozí 1.
+- **Obtížnost** (jen předměty s úrovněmi, dnes matematika a fyzika): posuvník 1–5, výchozí 1.
 - **Počet otázek**: defaultně celá výběrová sada, volitelně omezit (např. 10 / 20).
 - Slova, ve kterých profil dřív chyboval, se do kola zařazují přednostně (při omezení počtu mají přednost, jinak jdou na začátek).
 - Chybně zodpovězené slovo se v rámci kola jednou vrátí na konec fronty.
@@ -139,8 +159,8 @@ Skóre, 1–3 hvězdy podle úspěšnosti, seznam chybných slov se správnou od
 
 - **Identita**: název Brajnkraft, pixel-art logo mozku (`assets/logo-brain.svg`, použité i jako favicon).
 - **Maskot Brajník** s náhodnými hláškami na úvodní obrazovce a hláškami podle pásma skóre na výsledku kola (`js/quips.js`, čistá logika s testy).
-- **Postavy předmětů** v `assets/` (čistě dekorativní obrázky, `alt=""`): Tea-Rex (angličtina), Kalkulátoro Zlomkini (matematika), Pizzarius Maximus (dějepis), Kapitán Kompas (zeměpis).
-- **Přezdívky předmětů** na dlaždicích: Engliš, Matyka (s přeškrtnutým „y" opraveným na „i"), Děják, Zeměkoulopis.
+- **Postavy předmětů** v `assets/` (čistě dekorativní obrázky, `alt=""`): Tea-Rex (angličtina), Kalkulátoro Zlomkini (matematika), Pizzarius Maximus (dějepis), Kapitán Kompas (zeměpis), Sir Isaac Gravitón (fyzika).
+- **Přezdívky předmětů** na dlaždicích: Engliš, Matyka (s přeškrtnutým „y" opraveným na „i"), Děják, Zeměkoulopis, Physique.
 - **Jména postav** jsou vidět v textu: v nápovědě u matematiky („Kalkulátoro Zlomkini radí:") a pod obrázkem postavy na obrazovce výběru tématu.
 - V `js/registry.js` má předmět volitelná pole `image` (`{ src, alt }`, `alt` = jméno postavy) a `nickname` (pole částí; část `{ wrong, fix }` = přeškrtnutý překlep s opravou). Bez nich se zobrazí textová ikona a `title`.
 

@@ -47,6 +47,14 @@ Specifikace: [zadani.md](zadani.md).
 - [x] Zeměpis — připravovaná dlaždice (přezdívka Zeměkoulopis) a postava Kapitán Kompas, jména postav v nápovědě a u výběru témat
 - [x] Zeměpis — data a kategorie (téma Biomy, kategorie Biomy), kartičky
 
+## Fyzika — hustota
+
+- [x] Předmět Fyzika (přezdívka Physique) a postava Sir Isaac Gravitón, hláška maskota
+- [x] Tabulka materiálů, jednotky a převody přes zlomky, generátory 5 kategorií (převody, hustota, hmotnost, objem, z čeho je předmět) + testy
+- [x] Obtížnost 1–5, slovní úlohy, postup po chybě, nápověda
+- [x] Typ odpovědi `text` (textové pole ve hře „Zápis")
+- [ ] Další témata fyziky
+
 ## Fáze 3 — nasazení
 
 - [x] `_headers` (CSP a security hlavičky)
