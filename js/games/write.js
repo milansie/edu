@@ -9,7 +9,7 @@ const COMMA_TYPES = new Set(['decimal']);
 
 /**
  * Hra „Zápis“: odpověď se zapisuje do políček podle typu odpovědi (celá část / čitatel / jmenovatel /
- * číslo) vlastní klávesnicí na obrazovce nebo fyzickou klávesnicí; u porovnávání dvěma tlačítky `<` `>`,
+ * číslo) vlastní klávesnicí na obrazovce nebo fyzickou klávesnicí; u textové odpovědi (`text`) běžným textovým polem; u porovnávání dvěma tlačítky `<` `>`,
  * u řazení ťukáním na zlomky v pořadí (klávesy `1`–`4`, Backspace vrací poslední).
  * Otázka nese `answerType`, `expected` a `display` (viz subjects/math). `options`:
  * `{ hint, image, onDone, onProgress }`, kde `hint` je `{ rule, example }` nebo null a `image` je `{ src, alt }` postavy předmětu (`alt` = jméno zobrazené v nápovědě) nebo null. Vrací `unmount()`.
@@ -57,7 +57,9 @@ export function mount(container, round, { hint, image, onDone, onProgress }) {
     if (isOrder()) {
       slotEls = new Map(Array.from({ length: ORDER_LENGTH }, (_, i) => [i, h('div', { class: 'answer-slot order-slot' })]));
     }
+    if (isText()) slotEls = new Map([['v', buildTextInput()]]);
     if (question.answerType === 'relation') controls = buildRelationPad();
+    else if (isText()) controls = buildTextPad();
     else if (isOrder()) controls = buildOrderPad();
     else controls = buildKeypad();
     feedback = h('p', { class: 'feedback', 'aria-live': 'polite' });
@@ -90,10 +92,41 @@ export function mount(container, round, { hint, image, onDone, onProgress }) {
       ),
     );
     refreshSlots();
+    if (isText()) slotEls.get('v').focus();
   }
 
   function isOrder() {
     return question.answerType === 'order';
+  }
+
+  function isText() {
+    return question.answerType === 'text';
+  }
+
+  /** Textové pole odpovědi; hodnota se průběžně přepisuje do `values.v`. */
+  function buildTextInput() {
+    return h('input', {
+      type: 'text',
+      class: 'answer-slot answer-text',
+      lang: 'cs',
+      autocomplete: 'off',
+      autocapitalize: 'off',
+      autocorrect: 'off',
+      spellcheck: 'false',
+      enterkeyhint: 'done',
+      'aria-label': slots[0].label,
+      oninput: (e) => {
+        values.v = e.target.value;
+      },
+    });
+  }
+
+  function buildTextPad() {
+    return h(
+      'div',
+      { class: 'text-pad' },
+      h('button', { type: 'button', class: 'btn btn-green', onclick: submit }, 'Zkontrolovat'),
+    );
   }
 
   function buildHint() {
@@ -112,6 +145,7 @@ export function mount(container, round, { hint, image, onDone, onProgress }) {
     switch (question.answerType) {
       case 'integer':
       case 'decimal':
+      case 'text':
         content = [slot('v')];
         break;
       case 'mixed':
@@ -210,7 +244,7 @@ export function mount(container, round, { hint, image, onDone, onProgress }) {
       return;
     }
     for (const [key, el] of slotEls) {
-      el.textContent = values[key];
+      if (!isText()) el.textContent = values[key];
       el.classList.toggle('is-active', !locked && key === active);
     }
   }
@@ -275,6 +309,7 @@ export function mount(container, round, { hint, image, onDone, onProgress }) {
     pendingNext = true;
     const correct = result.status === 'correct';
     round.answer(correct);
+    if (isText()) slotEls.get('v').readOnly = true;
     for (const el of slotEls.values()) el.classList.add(correct ? 'is-correct' : 'is-wrong');
     refreshSlots();
 
@@ -300,14 +335,14 @@ export function mount(container, round, { hint, image, onDone, onProgress }) {
   }
 
   function onKeydown(e) {
-    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.ctrlKey || e.metaKey || e.altKey || e.isComposing) return;
     if (e.key === 'Enter') {
       e.preventDefault();
       if (locked) next();
       else submit();
       return;
     }
-    if (locked) return;
+    if (locked || isText()) return;
     if (isOrder()) {
       if (/^[1-4]$/.test(e.key)) pickFraction(Number(e.key) - 1);
       else if (e.key === 'Backspace') {

@@ -123,3 +123,10 @@ test('isComplete: povinná políčka', () => {
   assert.ok(!isComplete('order', [2, 0, 3]));
   assert.ok(!isComplete('order', [2, 0, 2, 1]));
 });
+
+test('isComplete: text vyžaduje neprázdný text po ořezání mezer', () => {
+  assert.ok(isComplete('text', { v: 'zinek' }));
+  assert.ok(!isComplete('text', { v: '' }));
+  assert.ok(!isComplete('text', { v: '   ' }));
+  assert.ok(!isComplete('text', {}));
+});

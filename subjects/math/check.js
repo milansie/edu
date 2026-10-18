@@ -1,4 +1,6 @@
 import { gcd, equalsValue, fromMixed, parseDecimal } from '../../js/core/fraction.js';
+import { normalize } from '../../js/core/normalize.js';
+import { stripDiacritics } from '../../js/core/answer.js';
 
 /**
  * Políčka odpovědi podle typu: `{ key, label, optional? }`. Typ `relation` nemá políčka
@@ -17,6 +19,7 @@ export const ANSWER_SLOTS = {
   fraction: [{ key: 'n', label: 'Čitatel' }, { key: 'd', label: 'Jmenovatel' }],
   integer: [{ key: 'v', label: 'Výsledek' }],
   decimal: [{ key: 'v', label: 'Výsledek' }],
+  text: [{ key: 'v', label: 'Odpověď' }],
   relation: [],
   order: [],
 };
@@ -31,6 +34,9 @@ const MSG_REDUCE = 'Správně, ale ještě zkrať';
 const MSG_INTEGER = 'Zapiš jako celé číslo';
 const MSG_PROPER = 'Zlomková část musí být menší než 1';
 const MSG_ZERO = 'Jmenovatel nesmí být nula';
+
+/** Text pro porovnání názvů: bez diakritiky, malá písmena, sloučené mezery. */
+const fold = (text) => stripDiacritics(normalize(text));
 
 /** Přirozené číslo z řetězce číslic, jinak null (prázdný vstup, nečíselný znak). */
 function num(text) {
@@ -48,6 +54,7 @@ export function isComplete(answerType, input) {
     const filled = (key) => String(input?.[key] ?? '') !== '';
     return filled('n') ? filled('d') || !filled('w') : filled('w') && !filled('d');
   }
+  if (answerType === 'text') return String(input?.v ?? '').trim() !== '';
   return (ANSWER_SLOTS[answerType] ?? []).every((s) => s.optional || String(input?.[s.key] ?? '') !== '');
 }
 
@@ -55,7 +62,8 @@ export function isComplete(answerType, input) {
  * Vyhodnotí odpověď podle hodnoty, ne textu. `expected` a `input` mají tvar podle typu:
  * `reduced`/`fraction`/`fraction-exact` `{ n, d }` (u `input` řetězce), `mixed` `{ w, n, d }`,
  * `value` `{ n, d }` v základním tvaru (u `input` `{ w, n, d }`, celá část nepovinná, bez jmenovatele celé číslo),
- * `relation` znak, `order` pole indexů (shoda prvek po prvku), `integer` číslo (u `input` `{ v }`), `decimal` zlomek `{ n, d }` (u `input` `{ v }`).
+ * `relation` znak, `order` pole indexů (shoda prvek po prvku), `integer` číslo (u `input` `{ v }`), `decimal` zlomek `{ n, d }` (u `input` `{ v }`),
+ * `text` pole uznávaných názvů (u `input` `{ v }`; porovnává se bez diakritiky a velikosti písmen).
  * Vrací `{ status: 'correct' | 'wrong', message? }`; `message` vysvětluje, proč hodnotově správná odpověď neprošla.
  */
 export function evaluate(answerType, expected, input) {
@@ -79,6 +87,10 @@ export function evaluate(answerType, expected, input) {
     case 'decimal': {
       const value = parseDecimal(input?.v ?? '');
       return value && equalsValue(value, expected) ? CORRECT : WRONG;
+    }
+    case 'text': {
+      const typed = fold(input?.v);
+      return typed !== '' && expected.some((name) => fold(name) === typed) ? CORRECT : WRONG;
     }
     default:
       throw new Error(`Neznámý typ odpovědi: ${answerType}`);

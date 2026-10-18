@@ -477,6 +477,26 @@
   cursor: pointer;
 }
 
+.answer-text {
+  width: 100%;
+  font: inherit;
+  font-size: var(--text-lg);
+  font-weight: 800;
+  cursor: text;
+}
+
+.answer-text:focus-visible {
+  outline: none;
+}
+
+.text-pad {
+  display: grid;
+}
+
+.text-pad.is-locked {
+  pointer-events: none;
+}
+
 .answer-slot.is-active {
   border: 3px solid var(--color-gold-dark);
   box-shadow: var(--focus-ring);
