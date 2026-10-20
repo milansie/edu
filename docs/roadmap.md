@@ -56,6 +56,12 @@ Specifikace: [zadani.md](zadani.md).
 - [x] Typ odpovědi `text` (textové pole ve hře „Zápis")
 - [ ] Další témata fyziky
 
+## Rodičovská kontrola
+
+- [x] Session s 4místným PINem (hash se solí, throttling), statistika po předmětu › tématu › kategorii, jen první pokusy
+- [x] Obrazovka `#/parent`, tlačítko na úvodní obrazovce, indikátor v hlavičce, persistence v `localStorage` + testy
+- [ ] Později: export statistiky, historie více session
+
 ## Fáze 3 — nasazení
 
 - [x] `_headers` (CSP a security hlavičky)

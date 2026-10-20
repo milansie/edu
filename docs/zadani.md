@@ -153,9 +153,19 @@ Skóre, 1–3 hvězdy podle úspěšnosti, seznam chybných slov se správnou od
 ## Profily
 
 - Lokální profily bez hesla (jméno + avatar z vestavěné sady ve stylu pixel-art), výběr na úvodní obrazovce, založení nového v jednom kroku, smazání s potvrzením.
-- Účel: když si appku půjčí kamarád, nepokazí data jinému profilu. Nejde o zabezpečení.
+- Účel: když si appku půjčí kamarád, nepokazí data jinému profilu. Nejde o zabezpečení (rodičovská kontrola s PINem je samostatná funkce, viz Rodičovská kontrola).
 - Per profil v `localStorage`: poslední nastavení kola a chybná slova (čítač; správná odpověď ho snižuje, na nule slovo z chybných zmizí).
 - Data mají verzi schématu; nevalidní/poškozená data se nesmí shodit appku (fallback na prázdný profil).
+
+## Rodičovská kontrola
+
+Rodič na úvodní obrazovce (tlačítko „Rodič“ pod dlaždicemi předmětů, trasa `#/parent`) zadá dvakrát čtyřmístný PIN a zahájí session. Dokud session běží, sčítají se výsledky; dítě vidí jen nenápadný zámek v hlavičce a na úvodní obrazovce tlačítko „Kontrola běží“. Stejným PINem rodič zobrazí statistiku a zvolí „Pokračovat“ (session běží dál) nebo „Ukončit kontrolu“ (s potvrzením, data se smažou). Statistika se po odchodu z obrazovky skryje, další vstup znovu vyžaduje PIN. Session přežije reload stránky.
+
+- **Co se počítá:** jen první pokusy (opakování chybné otázky se nezapočítá), po předmětu › tématu › kategorii: počet příkladů, dobře, špatně. Zápis je v `round.answer` (obaluje ho `js/app.js`), logika je v `js/core/parental.js`. Předmět bez kategorií se zapisuje pod téma.
+- **Úložiště:** `localStorage`, klíč `brajnkraft.parental`, schéma `{ version: 1, startedAt, salt, pinHash, failed, lockedUntil, stats }`; `stats` je mapa `"<předmět>/<téma>/<kategorie>"` → `{ subject, topic, category, total, correct }` (titulky pro zobrazení). Poškozená data nebo neznámá verze = žádná session. Nejde-li `localStorage` použít, tlačítko se nezobrazí a zápis statistik je no-op.
+- **PIN:** přesně 4 číslice (`^\d{4}$`), neukládá se; ukládá se `SHA-256(salt + PIN)` (hex, `crypto.subtle`) s náhodnou 16B solí z `crypto.getRandomValues`.
+- **Throttling:** po 5 chybných pokusech zámek na 60 s (`failed`, `lockedUntil`); během zámku se PIN neověřuje, správný PIN čítač vynuluje.
+- **Model hrozby:** ochrana proti dítěti u zařízení, ne proti útočníkovi. Čtyřmístný PIN lze offline hrubou silou zjistit z uloženého hashe a kdo smaže data prohlížeče, session zruší.
 
 ## Vizuál a UX
 
