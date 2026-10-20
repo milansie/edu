@@ -119,6 +119,20 @@ const LEVEL_ONE_SNAPSHOT = {
     ["add-diff:7/9 + 3/4 =",{"n":55,"d":36}],
     ["add-diff:1/2 + 7/12 =",{"n":13,"d":12}],
   ],
+  "sub-same": [
+    ["sub-same:2/9 − 1/9 =",{"n":1,"d":9}],
+    ["sub-same:3/4 − 1/4 =",{"n":1,"d":2}],
+    ["sub-same:4/5 − 2/5 =",{"n":2,"d":5}],
+    ["sub-same:7/10 − 6/10 =",{"n":1,"d":10}],
+    ["sub-same:3/4 − 2/4 =",{"n":1,"d":4}],
+  ],
+  "sub-diff": [
+    ["sub-diff:1/3 − 1/8 =",{"n":5,"d":24}],
+    ["sub-diff:1/2 − 4/11 =",{"n":3,"d":22}],
+    ["sub-diff:7/10 − 2/3 =",{"n":1,"d":30}],
+    ["sub-diff:7/9 − 3/4 =",{"n":1,"d":36}],
+    ["sub-diff:7/12 − 1/2 =",{"n":1,"d":12}],
+  ],
 };
 
 test('všechny kategorie: správná odpověď projde, postup je neprázdný, typ odpovídá kategorii', () => {
@@ -489,6 +503,62 @@ test('add-diff: jmenovatele a společný jmenovatel podle úrovně, úroveň 5 p
       if (gcd(a.d, b.d) === 1) coprime++;
     }, level);
     if (level === 5) assert.ok(coprime / ITERATIONS > 0.7);
+  }
+});
+
+test('sub-same: stejný jmenovatel, kladný rozdíl v základním tvaru, jmenovatel a počet odečítaných podle úrovně', () => {
+  const maxD = [12, 15, 20, 20, 25];
+  for (const level of LEVELS) {
+    let triples = 0;
+    forEachItem('sub-same', 320, (item) => {
+      const terms = item.display.prompt.filter((p) => p.t === 'frac');
+      assert.ok(terms.length === 2 || terms.length === 3);
+      assert.ok(terms.every((t) => t.d === terms[0].d && t.n >= 1 && t.n < t.d));
+      assert.ok(terms[0].d >= 3 && terms[0].d <= maxD[level - 1]);
+      const diff = terms.slice(1).reduce((rest, t) => rest - t.n, terms[0].n);
+      assert.ok(diff > 0);
+      assert.ok(equalsValue({ n: diff, d: terms[0].d }, item.expected));
+      assert.ok(item.expected.n > 0 && gcd(item.expected.n, item.expected.d) === 1);
+      assert.ok(item.display.steps.length > 0);
+      assert.equal(item.display.prompt.at(-1).v, '=');
+      assert.equal(evaluate('value', item.expected, correctInput(item)).status, 'correct');
+      if (terms.length === 3) triples++;
+    }, level);
+    assert.ok(Math.abs(triples / ITERATIONS - [0, 0, 0, 0.3, 0.5][level - 1]) < 0.06, `podíl tří zlomků na úrovni ${level}`);
+  }
+});
+
+test('sub-diff: různé jmenovatele, menšenec větší, kladný rozdíl v základním tvaru, jmenovatele podle úrovně', () => {
+  const maxD = [12, 15, 20, 24, 30];
+  const maxCommon = [36, 48, 60, 90, 120];
+  for (const level of LEVELS) {
+    let coprime = 0;
+    forEachItem('sub-diff', 330, (item) => {
+      const [a, , b] = item.display.prompt;
+      assert.notEqual(a.d, b.d);
+      assert.ok(a.d <= maxD[level - 1] && b.d <= maxD[level - 1]);
+      assert.ok(lcm(a.d, b.d) <= maxCommon[level - 1]);
+      assert.ok(a.n >= 1 && a.n < a.d && gcd(a.n, a.d) === 1);
+      assert.ok(b.n >= 1 && b.n < b.d && gcd(b.n, b.d) === 1);
+      const diff = { n: a.n * b.d - b.n * a.d, d: a.d * b.d };
+      assert.ok(diff.n > 0);
+      assert.ok(equalsValue(diff, item.expected));
+      assert.ok(gcd(item.expected.n, item.expected.d) === 1 && item.expected.d > 1);
+      assert.ok(item.display.steps.length > 0);
+      assert.equal(evaluate('value', item.expected, correctInput(item)).status, 'correct');
+      if (gcd(a.d, b.d) === 1) coprime++;
+    }, level);
+    if (level === 5) assert.ok(coprime / ITERATIONS > 0.7);
+  }
+});
+
+test('sub-same a sub-diff: stejný seed dá stejné položky', () => {
+  for (const id of ['sub-same', 'sub-diff']) {
+    const run = () => LEVELS.flatMap((level) => {
+      const rng = seeded(555);
+      return Array.from({ length: 50 }, () => category(id).generate(rng, level).id);
+    });
+    assert.deepEqual(run(), run());
   }
 });
 
