@@ -565,3 +565,145 @@ body {
   font-weight: 700;
   text-align: center;
 }
+
+/* Rodičovská kontrola: tlačítko na úvodní obrazovce, indikátor v hlavičce a obrazovka s PINem a statistikou */
+.parent-link {
+  align-self: center;
+  min-height: 0;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.parent-indicator {
+  margin-left: auto;
+  font-size: var(--text-sm);
+  opacity: 0.6;
+}
+
+.parent-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.parent-form,
+.parent-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.parent-pin {
+  width: 100%;
+  min-height: var(--tap-min);
+  padding: 0 var(--space-3);
+  font: inherit;
+  font-size: var(--text-lg);
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  text-align: center;
+  color: var(--color-ink);
+  background: var(--color-white);
+  border: var(--border-w) solid var(--color-ink);
+  border-radius: var(--radius);
+}
+
+.parent-pin:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.parent-form > .btn,
+.parent-actions > .btn {
+  width: 100%;
+}
+
+.parent-note,
+.parent-error {
+  margin: 0;
+}
+
+.parent-error {
+  min-height: 1.2em;
+  font-weight: 800;
+  color: var(--color-red-dark);
+}
+
+.parent-total {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-display);
+}
+
+.parent-stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.parent-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.parent-empty {
+  text-align: center;
+  font-weight: 700;
+  color: var(--color-white);
+  text-shadow: 0 2px 0 var(--color-ink);
+}
+
+.parent-table-wrap {
+  overflow-x: auto;
+  background: var(--color-panel);
+  border: var(--border-w) solid var(--color-ink);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+
+.parent-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.parent-table th,
+.parent-table td {
+  padding: var(--space-2);
+  text-align: left;
+  border-bottom: 2px solid var(--color-panel-edge);
+}
+
+.parent-table th:not(:first-child),
+.parent-num {
+  text-align: right;
+}
+
+.parent-path,
+.parent-category {
+  display: block;
+}
+
+.parent-path {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.parent-category {
+  font-weight: 800;
+}
+
+.parent-ok {
+  color: var(--color-green-dark);
+  font-weight: 800;
+}
+
+.parent-bad {
+  color: var(--color-red-dark);
+  font-weight: 800;
+}

@@ -2,8 +2,11 @@ import { h } from '../ui/dom.js';
 import { pickQuip } from '../quips.js';
 import { renderSubjectName } from '../ui/nickname.js';
 
-/** Výběr předmětu: dlaždice podle registru; připravované předměty (bez `load`) jsou neaktivní. */
-export function render(container, { subjects, onPick }) {
+/**
+ * Výběr předmětu: dlaždice podle registru; připravované předměty (bez `load`) jsou neaktivní.
+ * `parental` (`{ available, active, onOpen }`) řídí tlačítko rodičovské kontroly pod dlaždicemi; bez `available` se nezobrazí.
+ */
+export function render(container, { subjects, onPick, parental = null }) {
   container.append(
     h(
       'div',
@@ -39,6 +42,13 @@ export function render(container, { subjects, onPick }) {
           ),
         ),
       ),
+      parental?.available
+        ? h(
+            'button',
+            { type: 'button', class: parental.active ? 'btn btn-gold parent-link is-active' : 'btn btn-stone parent-link', onclick: parental.onOpen },
+            parental.active ? '🔒 Kontrola běží' : '🔒 Rodič',
+          )
+        : null,
     ),
   );
 }

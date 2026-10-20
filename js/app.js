@@ -6,8 +6,31 @@ import { render as renderSubjects } from './screens/subjects.js';
 import { render as renderTopics } from './screens/topics.js';
 import { render as renderSetup } from './screens/setup.js';
 import { render as renderResult } from './screens/result.js';
+import { render as renderParent } from './screens/parent.js';
+import { createParental } from './core/parental.js';
 
 const DIRECTIONS = { ab: ['ab'], ba: ['ba'], both: ['ab', 'ba'] };
+
+/** Úložiště pro rodičovskou kontrolu; i samotný přístup k `localStorage` může vyhodit výjimku. */
+function safeStorage() {
+  try {
+    return window.localStorage;
+  } catch {
+    return {
+      getItem() {
+        throw new Error('localStorage není dostupný');
+      },
+      setItem() {
+        throw new Error('localStorage není dostupný');
+      },
+      removeItem() {
+        throw new Error('localStorage není dostupný');
+      },
+    };
+  }
+}
+
+const parental = createParental({ storage: safeStorage(), crypto: window.crypto });
 
 const appEl = document.getElementById('app');
 const loadedSubjects = new Map();
@@ -46,6 +69,7 @@ function buildShell({ title, backHash, image = null }) {
     { class: 'progress', role: 'progressbar', 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': '0', hidden: true },
     fill,
   );
+  const parentalActive = backHash !== null && parental.status().active && parseHash().subjectId !== 'parent';
   const header = h(
     'header',
     { class: 'app-header' },
@@ -61,6 +85,7 @@ function buildShell({ title, backHash, image = null }) {
           title,
         ),
     progress,
+    parentalActive ? h('span', { class: 'parent-indicator', role: 'img', 'aria-label': 'Rodičovská kontrola běží', title: 'Rodičovská kontrola běží' }, '🔒') : null,
   );
   const screen = h('div', { class: 'screen' });
   appEl.replaceChildren(header, screen);
@@ -91,8 +116,52 @@ function hintFor(subject, settings) {
   return settings.categoryIds.length === 1 ? (subject.hintFor?.(settings.categoryIds[0]) ?? null) : null;
 }
 
+/** Titulky předmětu a tématu a mapa titulků kategorií pro rodičovskou kontrolu; při chybě načtení zůstanou jen id. */
+async function loadTrackingMeta(subject, topicId) {
+  const meta = { subjectTitle: getSubject(subject.id).title, topicTitle: topicId, categoryTitles: new Map() };
+  try {
+    const [topics, categories] = await Promise.all([subject.loadTopics(), subject.loadCategories()]);
+    meta.topicTitle = topics.find((t) => t.id === topicId)?.title ?? topicId;
+    for (const c of categories) meta.categoryTitles.set(c.id, c.title);
+  } catch (error) {
+    console.error(error);
+  }
+  return meta;
+}
+
+/**
+ * Obalí `round.answer`, aby se první pokusy zapisovaly do rodičovské kontroly (bez session je zápis no-op).
+ * Kategorie neznámá předmětu se nahradí tématem. Chyba zápisu hru nikdy neshodí.
+ */
+function trackAnswers(round, { subjectId, topicId, meta }) {
+  const answer = round.answer;
+  round.answer = (correct) => {
+    const question = round.current();
+    answer(correct);
+    if (!question || question.retry) return;
+    try {
+      const rawId = question.item?.category;
+      const categoryTitle = rawId === undefined ? undefined : meta.categoryTitles.get(rawId);
+      parental.record({
+        subjectId,
+        subjectTitle: meta.subjectTitle,
+        topicId,
+        topicTitle: meta.topicTitle,
+        categoryId: categoryTitle === undefined ? topicId : rawId,
+        categoryTitle: categoryTitle ?? meta.topicTitle,
+        correct,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  return round;
+}
+
 /** Sestaví kolo: generované příklady (matematika), nebo načtené položky vybraných kategorií, a přejde do hry. */
 async function startRound(subject, topicId, settings) {
+  const meta = await loadTrackingMeta(subject, topicId);
+  const track = (round) => trackAnswers(round, { subjectId: subject.id, topicId, meta });
   if (subject.generate) {
     state.play = {
       subjectId: subject.id,
@@ -100,10 +169,13 @@ async function startRound(subject, topicId, settings) {
       settings: { ...settings },
       pool: null,
       hint: hintFor(subject, settings),
-      round: createRound(subject.generate(settings.categoryIds, settings.limit, { level: settings.level }), {
-        limit: settings.limit,
-        makeQuestion: subject.makeQuestion,
-      }),
+      meta,
+      round: track(
+        createRound(subject.generate(settings.categoryIds, settings.limit, { level: settings.level }), {
+          limit: settings.limit,
+          makeQuestion: subject.makeQuestion,
+        }),
+      ),
     };
     state.result = null;
     navigate(`#/${subject.id}/${topicId}/play`);
@@ -120,7 +192,8 @@ async function startRound(subject, topicId, settings) {
     settings: { ...settings },
     pool: { selected, all },
     hint: null,
-    round: createRound(selected, { directions: DIRECTIONS[settings.direction], limit: settings.limit }),
+    meta,
+    round: track(createRound(selected, { directions: DIRECTIONS[settings.direction], limit: settings.limit })),
   };
   state.result = null;
   navigate(`#/${subject.id}/${topicId}/play`);
@@ -130,10 +203,13 @@ function repeatWrong(subject) {
   const { settings, topicId } = state.play;
   const direction = subject.sides ? settings.direction : 'ab';
   const items = state.result.summary.wrong.map((q) => q.item);
-  state.play.round = createRound(items, {
-    directions: DIRECTIONS[direction],
-    makeQuestion: subject.makeQuestion,
-  });
+  state.play.round = trackAnswers(
+    createRound(items, {
+      directions: DIRECTIONS[direction],
+      makeQuestion: subject.makeQuestion,
+    }),
+    { subjectId: subject.id, topicId, meta: state.play.meta },
+  );
   state.result = null;
   navigate(`#/${subject.id}/${topicId}/play`);
 }
@@ -148,7 +224,26 @@ async function route() {
 
     if (!subjectId) {
       const shell = buildShell({ title: null, backHash: null });
-      renderSubjects(shell.screen, { subjects, onPick: (id) => navigate(`#/${id}`) });
+      const { available, active } = parental.status();
+      renderSubjects(shell.screen, {
+        subjects,
+        onPick: (id) => navigate(`#/${id}`),
+        parental: { available, active, onOpen: () => navigate('#/parent') },
+      });
+      return;
+    }
+    if (subjectId === 'parent') {
+      if (!parental.status().available) {
+        redirect('#/');
+        return;
+      }
+      const shell = buildShell({ title: 'Rodič', backHash: '#/' });
+      cleanup = renderParent(shell.screen, {
+        parental,
+        onStarted: () => navigate('#/'),
+        onContinue: () => navigate('#/'),
+        onEnded: () => navigate('#/'),
+      });
       return;
     }
     if (!getSubject(subjectId)?.load) {
