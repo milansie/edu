@@ -85,7 +85,13 @@ function buildShell({ title, backHash, image = null }) {
           title,
         ),
     progress,
-    parentalActive ? h('span', { class: 'parent-indicator', role: 'img', 'aria-label': 'Rodičovská kontrola běží', title: 'Rodičovská kontrola běží' }, '🔒') : null,
+    parentalActive
+      ? h(
+          'button',
+          { type: 'button', class: 'parent-indicator', 'aria-label': 'Rodičovská kontrola', title: 'Rodičovská kontrola', onclick: openParentOverlay },
+          '🔒',
+        )
+      : null,
   );
   const screen = h('div', { class: 'screen' });
   appEl.replaceChildren(header, screen);
@@ -97,6 +103,59 @@ function buildShell({ title, backHash, image = null }) {
     progress.setAttribute('aria-valuenow', String(pct));
   };
   return { screen, setProgress };
+}
+
+/** Zavře překryv rodičovské kontroly (je-li otevřený): úklid obrazovky, odpojení klávesové ochrany, návrat fokusu. */
+let closeParentOverlay = null;
+
+/**
+ * Otevře rodičovskou obrazovku jako překryv nad aktuální obrazovkou. Hash ani DOM obrazovky pod ním se nemění,
+ * takže rozehrané kolo běží dál (obrazovka pod ním je `inert`). PIN se ptá při každém otevření. Dokud je překryv otevřený, klávesy nedosáhnou
+ * na herní posluchače na `document`; Escape překryv zavře.
+ */
+function openParentOverlay() {
+  if (closeParentOverlay) return;
+  const opener = document.activeElement;
+  const screen = h('div', { class: 'screen' });
+  const closeButton = h('button', { type: 'button', class: 'btn btn-orange btn-icon', 'aria-label': 'Zavřít', onclick: () => closeParentOverlay?.() }, '✕');
+  const overlay = h(
+    'div',
+    { class: 'parent-overlay', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Rodičovská kontrola', tabindex: '-1' },
+    h('div', { class: 'parent-overlay-inner' }, h('header', { class: 'app-header' }, closeButton, h('h1', { class: 'app-title' }, 'Rodič')), screen),
+  );
+
+  let cleanupScreen = null;
+  const close = () => {
+    closeParentOverlay = null;
+    cleanupScreen?.();
+    document.removeEventListener('keydown', onKeydownCapture, true);
+    overlay.remove();
+    appEl.inert = false;
+    if (opener instanceof HTMLElement && opener.isConnected) opener.focus();
+  };
+  // Zachytí klávesy mimo překryv (fokus na body), aby je nedostaly hry; Escape zavírá.
+  const onKeydownCapture = (e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      close();
+    } else if (!overlay.contains(e.target)) {
+      e.stopPropagation();
+    }
+  };
+  overlay.addEventListener('keydown', (e) => e.stopPropagation());
+  closeParentOverlay = close;
+  document.addEventListener('keydown', onKeydownCapture, true);
+  document.body.append(overlay);
+  // Hra pod překryvem nesmí přebírat fokus (auto-next timery) ani reagovat na Tab/Enter.
+  appEl.inert = true;
+
+  const end = () => {
+    appEl.querySelector('.parent-indicator')?.remove();
+    close();
+  };
+  cleanupScreen = renderParent(screen, { parental, onStarted: close, onContinue: close, onEnded: end });
+  if (!screen.querySelector('input')) overlay.focus();
 }
 
 function showError(error) {
@@ -216,6 +275,7 @@ function repeatWrong(subject) {
 
 async function route() {
   const token = ++renderToken;
+  closeParentOverlay?.();
   cleanup?.();
   cleanup = null;
 
