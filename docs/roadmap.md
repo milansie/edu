@@ -33,7 +33,8 @@ Specifikace: [zadani.md](zadani.md).
 - [x] Sčítání zlomků (stejný a různý jmenovatel, typ odpovědi `value`)
 - [x] Řazení zlomků (4 zlomky od nejmenšího, pořadí ťuknutím)
 - [x] Obtížnost zlomků 1–5 (posuvník v nastavení kola)
-- [ ] Později: odčítání, násobení, dělení zlomků
+- [x] Odčítání zlomků (stejný a různý jmenovatel, typ odpovědi `value`)
+- [ ] Později: násobení, dělení zlomků
 
 ## Dějepis
 
