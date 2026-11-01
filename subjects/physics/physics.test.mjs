@@ -4,6 +4,7 @@ import { seeded } from '../../js/core/testutil.mjs';
 import { equalsValue, formatDecimal } from '../../js/core/fraction.js';
 import { evaluate } from '../math/check.js';
 import { categories } from './density/index.js';
+import { categories as speedCategories } from './speed/index.js';
 import { subject } from './subject.js';
 import { materials } from './materials.js';
 import { UNITS, convert, decimalPlaces, toBase, mul } from './units.js';
@@ -123,9 +124,17 @@ test('odpověď typu text: bez diakritiky a velikosti písmen, jiný materiál n
   assert.equal(evaluate('text', [spruce.name, ...spruce.aliases], { v: 'smrk' }).status, 'correct');
 });
 
-test('subject: generate a makeQuestion pro všechny kategorie a úrovně', async () => {
-  const ids = (await subject.loadCategories()).map((c) => c.id);
-  assert.deepEqual(ids, categories.map((c) => c.id));
+test('subject: generate a makeQuestion pro všechny kategorie obou témat a úrovně', async () => {
+  const loaded = await subject.loadCategories();
+  const ids = loaded.map((c) => c.id);
+  assert.deepEqual(ids, [...categories, ...speedCategories].map((c) => c.id));
+  assert.equal(new Set(ids).size, ids.length);
+  assert.deepEqual(
+    (await subject.loadTopics()).map((t) => t.id),
+    ['density', 'speed'],
+  );
+  assert.ok(categories.every((c) => loaded.find((l) => l.id === c.id).topic === 'density'));
+  assert.ok(speedCategories.every((c) => loaded.find((l) => l.id === c.id).topic === 'speed'));
   for (const level of LEVELS) {
     const items = subject.generate(ids, 20, { rng: seeded(level), level });
     assert.equal(items.length, 20);

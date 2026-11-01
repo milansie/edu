@@ -1,6 +1,7 @@
 import { h } from '../ui/dom.js';
 import { fractionNode, renderParts } from '../ui/math.js';
 import { ANSWER_SLOTS, evaluate, isComplete } from '../../subjects/math/check.js';
+import { plainText } from '../../subjects/math/fractions/helpers.js';
 
 const AUTO_NEXT_MS = 800;
 const MAX_LENGTH = 7;
@@ -201,7 +202,7 @@ export function mount(container, round, { hint, image, onDone, onProgress }) {
     orderButtons = question.display.prompt.map((part, i) =>
       h(
         'button',
-        { type: 'button', class: 'btn btn-purple order-key', 'aria-label': `${part.n}/${part.d}`, onclick: () => pickFraction(i) },
+        { type: 'button', class: 'btn btn-purple order-key', 'aria-label': plainText([part]), onclick: () => pickFraction(i) },
         renderParts([part]),
       ),
     );

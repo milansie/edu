@@ -1,13 +1,15 @@
 import { shuffle } from '../../js/core/rng.js';
 import { plainText } from '../math/fractions/helpers.js';
-import { categories } from './density/index.js';
+import { categories as densityCategories } from './density/index.js';
+import { categories as speedCategories } from './speed/index.js';
 
-const TOPIC = 'density';
-const TOPICS = [{ id: TOPIC, title: 'Hustota' }];
+const TOPICS = [{ id: 'density', title: 'Hustota' }, { id: 'speed', title: 'Rychlost' }];
+/** Kategorie jednotlivých témat v pořadí nabídky; id kategorií jsou unikátní napříč všemi tématy. */
+const CATEGORIES_BY_TOPIC = { density: densityCategories, speed: speedCategories };
 const DEFAULT_COUNT = 10;
 const MAX_DUPLICATE_RETRIES = 20;
 
-const byId = new Map(categories.map((c) => [c.id, c]));
+const byId = new Map(Object.values(CATEGORIES_BY_TOPIC).flat().map((c) => [c.id, c]));
 
 /**
  * Adaptér předmětu fyzika: příklady se generují při každém kole (`generate`), nečtou se ze souboru.
@@ -30,7 +32,7 @@ export const subject = {
 
   /** Vrací `[{ id, title, topic }]` kategorií v pořadí nabídky. */
   async loadCategories() {
-    return categories.map(({ id, title }) => ({ id, title, topic: TOPIC }));
+    return Object.entries(CATEGORIES_BY_TOPIC).flatMap(([topic, list]) => list.map(({ id, title }) => ({ id, title, topic })));
   },
 
   /** Nápověda kategorie `{ rule, example }` nebo null pro neznámé id. */

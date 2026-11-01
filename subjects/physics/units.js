@@ -13,7 +13,8 @@ const MAX_STEP_CHARS = 12;
 
 /**
  * Jednotky: `quantity` je veličina, `factor` zlomek `{ n, d }` = kolik základních jednotek veličiny je v jedné
- * jednotce (základ: objem cm³, hmotnost g, hustota g/cm³). Hustota nese i `mass` a `volume`, ze kterých se skládá.
+ * jednotce (základ: objem cm³, hmotnost g, hustota g/cm³, délka m, čas s, rychlost m/s). Hustota nese i `mass` a `volume`,
+ * rychlost `length` a `time`, ze kterých se skládá.
  */
 export const UNITS = {
   'cm³': { quantity: 'volume', factor: { n: 1, d: 1 } },
@@ -28,6 +29,14 @@ export const UNITS = {
   'kg/l': { quantity: 'density', factor: { n: 1, d: 1 }, mass: 'kg', volume: 'l' },
   'kg/dm³': { quantity: 'density', factor: { n: 1, d: 1 }, mass: 'kg', volume: 'dm³' },
   'kg/m³': { quantity: 'density', factor: { n: 1, d: 1000 }, mass: 'kg', volume: 'm³' },
+  m: { quantity: 'length', factor: { n: 1, d: 1 } },
+  km: { quantity: 'length', factor: { n: 1000, d: 1 } },
+  s: { quantity: 'time', factor: { n: 1, d: 1 } },
+  min: { quantity: 'time', factor: { n: 60, d: 1 } },
+  h: { quantity: 'time', factor: { n: 3600, d: 1 } },
+  'm/s': { quantity: 'speed', factor: { n: 1, d: 1 }, length: 'm', time: 's' },
+  'km/h': { quantity: 'speed', factor: { n: 5, d: 18 }, length: 'km', time: 'h' },
+  'm/min': { quantity: 'speed', factor: { n: 1, d: 60 }, length: 'm', time: 'min' },
 };
 
 /** Chyba „hodnota se nehodí do zadání“; generátor takový pokus zahodí a zkusí jiný. */
@@ -79,6 +88,15 @@ export function fmtStep(value) {
   const text = format(value, MAX_STEP_DECIMALS);
   if (text.length > MAX_STEP_CHARS) throw new Rejected(`Příliš dlouhé číslo ${text}.`);
   return text;
+}
+
+/**
+ * Zápis kladného zlomku zaokrouhleného na desetiny pro postup řešení: `= 60` pro přesnou hodnotu s nejvýš
+ * 1 desetinným místem, jinak `≈ 53,6`.
+ */
+export function fmtApprox(value) {
+  if (decimalPlaces(value) <= MAX_DECIMALS) return `= ${formatDecimal(value)}`;
+  return `≈ ${formatDecimal(tenths(Math.round((value.n * 10) / value.d)))}`;
 }
 
 /** Zápis hodnoty s jednotkou: `50 cm³`. */
