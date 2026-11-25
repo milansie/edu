@@ -10,9 +10,28 @@ import addSame from './add-same.js';
 import addDiff from './add-diff.js';
 import subSame from './sub-same.js';
 import subDiff from './sub-diff.js';
+import multiply from './multiply.js';
+import divide from './divide.js';
+import compound from './compound.js';
 
 /**
  * Kategorie zlomků v pořadí pracovního listu. Kategorie:
  * `{ id, title, answerType, hint: { rule, example }, generate(rng, level = 1) → položka }`.
  */
-export const categories = [shortening, toMixed, fromMixed, expanding, comparing, ofWhole, toDecimal, ordering, addSame, subSame, addDiff, subDiff];
+export const categories = [
+  shortening,
+  toMixed,
+  fromMixed,
+  expanding,
+  comparing,
+  ofWhole,
+  toDecimal,
+  ordering,
+  addSame,
+  subSame,
+  addDiff,
+  subDiff,
+  multiply,
+  divide,
+  compound,
+];

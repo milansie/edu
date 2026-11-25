@@ -34,7 +34,7 @@ Specifikace: [zadani.md](zadani.md).
 - [x] Řazení zlomků (4 zlomky od nejmenšího, pořadí ťuknutím)
 - [x] Obtížnost zlomků 1–5 (posuvník v nastavení kola)
 - [x] Odčítání zlomků (stejný a různý jmenovatel, typ odpovědi `value`)
-- [ ] Později: násobení, dělení zlomků
+- [x] Násobení, dělení a složené zlomky (typ odpovědi `value`, vykreslení složeného zlomku, 5 úrovní)
 
 ## Dějepis
 
@@ -55,6 +55,11 @@ Specifikace: [zadani.md](zadani.md).
 - [x] Obtížnost 1–5, slovní úlohy, postup po chybě, nápověda
 - [x] Typ odpovědi `text` (textové pole ve hře „Zápis")
 - [ ] Další témata fyziky
+
+## Fyzika — rychlost
+
+- [x] Téma Rychlost (dráha, čas): jednotky délky, času a rychlosti přes zlomky, generátory 8 kategorií (převody, rychlost, dráha, čas, porovnání, seřazení, jízdní řád, úseky cesty) + testy
+- [x] Obtížnost 1–5, slovní úlohy, postup po chybě, nápověda
 
 ## Rodičovská kontrola
 

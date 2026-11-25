@@ -24,6 +24,32 @@ export function reduce({ n, d }) {
   return { n: n / g, d: d / g };
 }
 
+/** Součet dvou zlomků v základním tvaru. */
+export function add(a, b) {
+  const n = a.n * b.d + b.n * a.d;
+  return reduce({ n: n === 0 ? 0 : n, d: a.d * b.d });
+}
+
+/** Rozdíl dvou zlomků v základním tvaru (pro a < b má záporný čitatel). */
+export function sub(a, b) {
+  const n = a.n * b.d - b.n * a.d;
+  return reduce({ n: n === 0 ? 0 : n, d: a.d * b.d });
+}
+
+/** Součin dvou zlomků v základním tvaru. */
+export function mul(a, b) {
+  const n = a.n * b.n;
+  return reduce({ n: n === 0 ? 0 : n, d: a.d * b.d });
+}
+
+/** Podíl dvou zlomků v základním tvaru. Při dělení nulou vyhodí `RangeError`. */
+export function div(a, b) {
+  if (b.n === 0) throw new RangeError('Dělení nulou.');
+  const sign = b.n < 0 ? -1 : 1;
+  const n = sign * a.n * b.d;
+  return reduce({ n: n === 0 ? 0 : n, d: sign * a.d * b.n });
+}
+
 /** Mají zlomky stejnou hodnotu (bez ohledu na tvar)? */
 export function equalsValue(a, b) {
   return a.n * b.d === b.n * a.d;

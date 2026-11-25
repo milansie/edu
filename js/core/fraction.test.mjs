@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { gcd, lcm, reduce, equalsValue, compare, toMixed, fromMixed, parseDecimal, formatDecimal } from './fraction.js';
+import { gcd, lcm, reduce, add, sub, mul, div, equalsValue, compare, toMixed, fromMixed, parseDecimal, formatDecimal } from './fraction.js';
 
 test('gcd a reduce', () => {
   assert.equal(gcd(12, 42), 6);
@@ -50,4 +50,28 @@ test('formatDecimal vrací nejkratší zápis s čárkou', () => {
   assert.equal(formatDecimal({ n: 4, d: 2 }), '2');
   assert.equal(formatDecimal({ n: 1, d: 100 }), '0,01');
   assert.throws(() => formatDecimal({ n: 1, d: 3 }));
+});
+
+test('add a sub sčítají a odčítají v základním tvaru', () => {
+  assert.deepEqual(add({ n: 1, d: 4 }, { n: 1, d: 6 }), { n: 5, d: 12 });
+  assert.deepEqual(add({ n: 1, d: 3 }, { n: 2, d: 3 }), { n: 1, d: 1 });
+  assert.deepEqual(add({ n: 0, d: 5 }, { n: 2, d: 6 }), { n: 1, d: 3 });
+  assert.deepEqual(sub({ n: 5, d: 6 }, { n: 1, d: 6 }), { n: 2, d: 3 });
+  assert.deepEqual(sub({ n: 5, d: 2 }, { n: 1, d: 2 }), { n: 2, d: 1 });
+  assert.deepEqual(sub({ n: 3, d: 4 }, { n: 6, d: 8 }), { n: 0, d: 1 });
+  assert.deepEqual(sub({ n: 1, d: 4 }, { n: 3, d: 4 }), { n: -1, d: 2 });
+});
+
+test('mul a div násobí a dělí v základním tvaru, dělení nulou vyhodí RangeError', () => {
+  assert.deepEqual(mul({ n: 2, d: 3 }, { n: 4, d: 5 }), { n: 8, d: 15 });
+  assert.deepEqual(mul({ n: 4, d: 9 }, { n: 3, d: 8 }), { n: 1, d: 6 });
+  assert.deepEqual(mul({ n: 3, d: 4 }, { n: 8, d: 3 }), { n: 2, d: 1 });
+  assert.deepEqual(mul({ n: -2, d: 3 }, { n: 0, d: 5 }), { n: 0, d: 1 });
+  assert.deepEqual(div({ n: 2, d: 3 }, { n: 4, d: 5 }), { n: 5, d: 6 });
+  assert.deepEqual(div({ n: 3, d: 4 }, { n: 9, d: 8 }), { n: 2, d: 3 });
+  assert.deepEqual(div({ n: 3, d: 2 }, { n: 1, d: 4 }), { n: 6, d: 1 });
+  assert.deepEqual(div({ n: 0, d: 1 }, { n: 3, d: 5 }), { n: 0, d: 1 });
+  assert.deepEqual(div({ n: 2, d: 3 }, { n: -4, d: 5 }), { n: -5, d: 6 });
+  assert.deepEqual(div({ n: 0, d: 1 }, { n: -2, d: 3 }), { n: 0, d: 1 });
+  assert.throws(() => div({ n: 1, d: 2 }, { n: 0, d: 3 }), RangeError);
 });

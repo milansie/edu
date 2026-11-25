@@ -84,25 +84,25 @@ Příklady se generují při každém kole znovu. Typy převzaté z pracovního 
 | Sčítání – různý jmenovatel | 1/4 + 1/6 = ? | libovolný správný tvar (typ `value`) |
 | Odčítání – stejný jmenovatel | 5/7 − 2/7 = ? | libovolný správný tvar (typ `value`), rozdíl je vždy kladný |
 | Odčítání – různý jmenovatel | 5/6 − 1/4 = ? | libovolný správný tvar (typ `value`), rozdíl je vždy kladný |
+| Násobení zlomků | 2/3 · 3/5 = ? | libovolný správný tvar (typ `value`) |
+| Dělení zlomků | 2/3 : 4/5 = ? | libovolný správný tvar (typ `value`) |
+| Složené zlomky | (2/3) / (4/5) = ? | libovolný správný tvar (typ `value`) |
 
-Typ odpovědi `value` (políčka celá část – nepovinná, čitatel, jmenovatel): uznává se nepravý zlomek v základním tvaru i smíšené číslo (9/7 i 1 2/7); celý výsledek jen jako celé číslo. Určen i pro další početní operace.
+Typ odpovědi `value` (políčka celá část – nepovinná, čitatel, jmenovatel): uznává se nepravý zlomek v základním tvaru i smíšené číslo (9/7 i 1 2/7); celý výsledek jen jako celé číslo.
 
-Připravené rozšíření: násobení a dělení zlomků (typ odpovědi `value`).
-
-**Obtížnost 1–5**: úroveň se volí posuvníkem v nastavení kola (popisky 1–5), výchozí je 1 = základní chování popsané výše. Vyšší úrovně zvětšují jmenovatele, činitele, celé části a násobky (každá kategorie má tabulku parametrů ve svém souboru) a přidávají těžší varianty: porovnávání od úrovně 3 se zlomky s různými jmenovateli a na úrovni 5 s těsnými dvojicemi (7/8 a 8/9); řazení od úrovně 3 s různými jmenovateli, od 4 jen s navzájem různými jmenovateli a na 5 s blízkými hodnotami; část z celku od úrovně 4 i s nepravými zlomky (5/4 z 36); převod na desetinné číslo s větším podílem nepravých zlomků a od úrovně 4 se jmenovateli 16, 40, 125, 200; sčítání se stejným jmenovatelem od úrovně 4 občas se třemi sčítanci; sčítání s různým jmenovatelem s většími jmenovateli a na úrovni 5 převážně nesoudělnými; odčítání se stejným jmenovatelem od úrovně 4 občas se dvěma odečítanými zlomky, odčítání s různým jmenovatelem stejně jako sčítání. Podmínky „hezkých" čísel výše platí pro úroveň 1.
+**Obtížnost 1–5**: úroveň se volí posuvníkem v nastavení kola (popisky 1–5), výchozí je 1 = základní chování popsané výše. Vyšší úrovně zvětšují jmenovatele, činitele, celé části a násobky (každá kategorie má tabulku parametrů ve svém souboru) a přidávají těžší varianty: porovnávání od úrovně 3 se zlomky s různými jmenovateli a na úrovni 5 s těsnými dvojicemi (7/8 a 8/9); řazení od úrovně 3 s různými jmenovateli, od 4 jen s navzájem různými jmenovateli a na 5 s blízkými hodnotami; část z celku od úrovně 4 i s nepravými zlomky (5/4 z 36); převod na desetinné číslo s větším podílem nepravých zlomků a od úrovně 4 se jmenovateli 16, 40, 125, 200; sčítání se stejným jmenovatelem od úrovně 4 občas se třemi sčítanci; sčítání s různým jmenovatelem s většími jmenovateli a na úrovni 5 převážně nesoudělnými; odčítání se stejným jmenovatelem od úrovně 4 občas se dvěma odečítanými zlomky, odčítání s různým jmenovatelem stejně jako sčítání; násobení a dělení na úrovni 2 se zaručeným křížovým krácením, na 3 s celým číslem, na 4 se smíšeným číslem (u násobení i se třemi zlomky) a na 5 se dvěma smíšenými čísly (u násobení i se třemi zlomky s křížovým krácením); složené zlomky od zlomek/celé na úrovni 1 přes zlomek/zlomek na 2, křížové krácení a smíšená čísla na 3 až po součet/rozdíl se stejným jmenovatelem nebo celým číslem na 4 a různými malými jmenovateli na 5. Podmínky „hezkých" čísel výše platí pro úroveň 1.
 
 - **Generátory** hlídají „hezká" čísla jako v pracovním listu: jmenovatele zhruba do 12–16 (u sčítání a odčítání s různým jmenovatelem společný jmenovatel nejvýše 36), část z celku vychází celá, u desetinných jen jmenovatele s konečným rozvojem (2, 4, 5, 8, 10, 20, 25, 50, 100). Každý generátor vrací zadání, správnou odpověď a postup řešení.
 - **Výběr**: konkrétní kategorie, nebo „Náhodně" (všechny kategorie promíchané). Směr se u matematiky nevolí.
 - **Délka kola**: výchozí 10 příkladů, volitelně 20.
-- **Hra „Zápis"**: zlomky se vykreslují pod sebou (čitatel / čára / jmenovatel). Vstup přes vlastní klávesnici na obrazovce (0–9, `,`, ⌫, potvrdit) do políček podle typu odpovědi (celá část / čitatel / jmenovatel / číslo); u porovnávání dvě velká tlačítka `<` a `>`; u řazení se zlomky ťukají v pořadí od nejmenšího do čtyř políček (⌫ vrátí poslední, ✓ odešle; na klávesnici `1`–`4`). Na desktopu funguje i fyzická klávesnice.
+- **Hra „Zápis"**: zlomky se vykreslují pod sebou (čitatel / čára / jmenovatel), u složených zlomků se čitatel i jmenovatel vykreslují rekurzivně nad a pod silnější hlavní zlomkovou čárou. Vstup přes vlastní klávesnici na obrazovce (0–9, `,`, ⌫, potvrdit) do políček podle typu odpovědi (celá část / čitatel / jmenovatel / číslo); u porovnávání dvě velká tlačítka `<` a `>`; u řazení se zlomky ťukají v pořadí od nejmenšího do čtyř políček (⌫ vrátí poslední, ✓ odešle; na klávesnici `1`–`4`). Na desktopu funguje i fyzická klávesnice.
 - **Vyhodnocení**: hodnota se porovnává matematicky, ne textově. Správná hodnota v nezkráceném tvaru, kde se chce základní tvar → neuznává se, hláška „Správně, ale ještě zkrať". Celé číslo zapsané jako zlomek (3/1) → neuznává se, hláška „Zapiš jako celé číslo". Smíšené číslo musí mít zlomkovou část menší než 1.
 - **Nápověda**: při procvičování jedné kategorie je nahoře vzor a pravidlo (z pracovního listu). V režimu „Náhodně" nápověda není.
 - **Po chybě** se ukáže správná odpověď i postup (např. `120 : 5 = 24, 24 · 3 = 72`). Postup je i ve výsledku kola u chybných příkladů.
-- Obtížnost zatím jedna úroveň.
 
 ## Fyzika — hustota
 
-Příklady se generují při každém kole znovu (předmět Fyzika, postava Sir Isaac Gravitón, přezdívka Physique), jediné téma „Hustota" s kategoriemi:
+Příklady se generují při každém kole znovu (předmět Fyzika, postava Sir Isaac Gravitón, přezdívka Physique), dvě témata: „Hustota" a „Rychlost" (viz dále). Téma „Hustota" má kategorie:
 
 | Kategorie | Zadání | Odpověď |
 |---|---|---|
@@ -119,6 +119,27 @@ Příklady se generují při každém kole znovu (předmět Fyzika, postava Sir 
 - **Obtížnost 1–5**: 1 = g + cm³ (resp. kg + dm³) bez převodů, celá čísla v zadání; 2 = i ml a l, zadání s 1 desetinným místem; 3 = jeden převod (kg↔g, l↔cm³, dm³↔cm³); 4 = i m³ a t, hustota většinou v kg/m³, převody g/cm³ ↔ kg/m³; 5 = libovolná kombinace jednotek, dva i více převodů.
 - **Po chybě** se ukáže správná odpověď a postup (převod jednotek, dosazení do vzorce, výsledek; u „z čeho je" i „ρ = 7,1 g/cm³ → zinek").
 - **Nápověda** (při jedné vybrané kategorii): vzorec ρ = m / V (resp. m = ρ · V, V = m / ρ) a převodní vztahy jednotek.
+
+## Fyzika — rychlost
+
+Druhé téma předmětu Fyzika, generované stejně jako hustota (zlomková aritmetika, „hezká" čísla odzadu, slovní úlohy, postup po chybě, 5 úrovní). Kategorie (id mají předponu `speed-`):
+
+| Kategorie | Zadání | Odpověď |
+|---|---|---|
+| Převody rychlosti | 36 km/h = ? m/s (na úrovni 5 i m/min) | desetinné číslo (`decimal`) |
+| Výpočet rychlosti | z dráhy a času, „rychlost zapiš v km/h" | desetinné číslo |
+| Výpočet dráhy | z rychlosti a času | desetinné číslo |
+| Výpočet času | z dráhy a rychlosti | desetinné číslo |
+| Porovnání rychlostí | dvě rychlosti v různých jednotkách (`72 km/h ? 15 m/s`) | `<` nebo `>` (typ `relation`, rovnost se nevygeneruje) |
+| Seřazení rychlostí | čtyři různé rychlosti v různých jednotkách | pořadí od nejmenší (typ `order`) |
+| Jízdní řád | „vyjel v 7:15, v 8:30 dojel do místa vzdáleného 48 km" | průměrná rychlost v km/h (`decimal`) |
+| Úseky cesty | tři úseky se zadanou dráhou a časem (25 km za 28 min; 3200 m za 5 min; 1 h 12 min a 72 km), „ve kterém úseku jel nejpomaleji / nejrychleji"; v postupu rychlost každého úseku zaokrouhlená na 0,1 km/h (≈) | číslo úseku 1–3 (typ `integer`) |
+
+- **Jednotky**: dráha m, km; čas s, min, h (u úseků od úrovně 4 i zápis „1 h 12 min", na úrovni 5 i s); rychlost m/s, km/h, m/min. Výpočty i úseky nekombinují dráhu v m s časem v h (ani v zápisu „X h Y min“); dráha v m má v úsecích nejvýš 4 číslice (do 9900 m). Výsledek se vždy požaduje v jednotce dané zadáním, dítě podle potřeby převádí. Převod rychlosti mezi km/h a m/min se neprocvičuje.
+- **„Hezká" čísla**: zadané hodnoty i výsledek mají nejvýš 1 desetinné místo (např. 42,6 km/h); porovnávané a řazené rychlosti i rychlosti úseků se liší aspoň o úrovní danou relativní mez (u úseků počítanou z přesných hodnot, ne ze zaokrouhlených), takže je odpověď jednoznačná. Úseky mají dráhu celou nebo s 1 desetinným místem v km, v m na stovky (jen u krátkých úseků), a libovolný čas v celých minutách (hodnota rychlosti se dopočítá, nemusí být celá). Čas „7:15 → 8:30" je jen v zadání jízdního řádu, odpovědí je vždy číslo.
+- **Slovní úlohy**: zhruba polovina zadání výpočtů je s hrdinou (automobil, autobus, vlak, cyklista, žák na koloběžce, chodec, vlaštovka, gepard; u úseků bez geparda) s uvěřitelnými rychlostmi, jednotkami a dobou pohybu; jízdní řád a úseky jsou vždy slovní.
+- **Obtížnost 1–5**: 1 = celá čísla bez převodu (km + h → km/h, m + s → m/s), převody jen násobky 3,6; 2 = jeden převod (min → h, m → km); 3 = desetinná čísla v zadání; 4 = převod vstupu i výstupu; 5 = všechny kombinace včetně m/min a jemnější časy.
+- **Nápověda** (při jedné vybrané kategorii): vzorec v = s / t (resp. s = v · t, t = s / v) a převodní vztahy (1 m/s = 3,6 km/h).
 
 ## Nastavení kola
 

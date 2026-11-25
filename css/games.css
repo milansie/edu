@@ -344,6 +344,26 @@
   gap: var(--space-1);
 }
 
+.frac-compound {
+  align-items: stretch;
+}
+
+.frac-compound > .frac-n,
+.frac-compound > .frac-d {
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  font-size: 0.78em;
+}
+
+.frac-compound > .frac-d {
+  border-top: var(--border-w) solid var(--color-ink);
+}
+
+.frac-compound .frac:not(.frac-compound) > .frac-d {
+  border-top-width: 2px;
+}
+
 /* Na nízkém displeji se Zápis raději posune, než aby se ořízla klávesnice. */
 .game-write {
   overflow-y: auto;

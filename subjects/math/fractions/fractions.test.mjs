@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { seeded } from '../../../js/core/testutil.mjs';
-import { gcd, lcm, equalsValue, formatDecimal } from '../../../js/core/fraction.js';
+import { gcd, lcm, add, sub, mul, div, fromMixed, equalsValue, formatDecimal } from '../../../js/core/fraction.js';
 import { evaluate } from '../check.js';
 import { categories } from './index.js';
 import { subject } from '../subject.js';
-import { levelOf } from './helpers.js';
+import { levelOf, compound, frac, text, plainText } from './helpers.js';
 
 const ITERATIONS = 1000;
 const LEVELS = [1, 2, 3, 4, 5];
@@ -132,6 +132,27 @@ const LEVEL_ONE_SNAPSHOT = {
     ["sub-diff:7/10 − 2/3 =",{"n":1,"d":30}],
     ["sub-diff:7/9 − 3/4 =",{"n":1,"d":36}],
     ["sub-diff:7/12 − 1/2 =",{"n":1,"d":12}],
+  ],
+  "multiply": [
+    ["multiply:1/7 · 1/3 =",{"n":1,"d":21}],
+    ["multiply:3/7 · 3/4 =",{"n":9,"d":28}],
+    ["multiply:5/6 · 6/7 =",{"n":5,"d":7}],
+    ["multiply:2/3 · 5/6 =",{"n":5,"d":9}],
+    ["multiply:1/6 · 7/9 =",{"n":7,"d":54}],
+  ],
+  "divide": [
+    ["divide:1/7 : 1/3 =",{"n":3,"d":7}],
+    ["divide:3/7 : 3/4 =",{"n":4,"d":7}],
+    ["divide:5/6 : 6/7 =",{"n":35,"d":36}],
+    ["divide:2/3 : 5/6 =",{"n":4,"d":5}],
+    ["divide:1/6 : 7/9 =",{"n":3,"d":14}],
+  ],
+  "compound": [
+    ["compound:(1/6)/(3) =",{"n":1,"d":18}],
+    ["compound:(3)/(1/6) =",{"n":18,"d":1}],
+    ["compound:(6)/(5/6) =",{"n":36,"d":5}],
+    ["compound:(5)/(1/2) =",{"n":10,"d":1}],
+    ["compound:(8)/(1/5) =",{"n":40,"d":1}],
   ],
 };
 
@@ -572,4 +593,185 @@ test('subject.generate: úroveň se předá kategoriím, deklaruje 5 úrovní', 
   assert.ok(triple(5) > 0);
   const defaults = subject.generate(['shortening'], 10, { rng: seeded(12) }).map((i) => i.id);
   assert.deepEqual(defaults, subject.generate(['shortening'], 10, { rng: seeded(12), level: 1 }).map((i) => i.id));
+});
+
+/** Vyhodnotí výraz z `parts` (zlomky, smíšená čísla, celá čísla, složené zlomky a operace +, −, ·, :). */
+function evalPart(part) {
+  if (part.t === 'frac') return { n: part.n, d: part.d };
+  if (part.t === 'mixed') return fromMixed(part);
+  if (part.t === 'compound') return div(evalParts(part.n), evalParts(part.d));
+  if (part.t === 'text' && /^\d+$/.test(part.v)) return { n: Number(part.v), d: 1 };
+  throw new Error(`Neznámá část výrazu: ${JSON.stringify(part)}`);
+}
+
+function evalParts(parts) {
+  const list = parts.at(-1)?.t === 'text' && parts.at(-1).v === '=' ? parts.slice(0, -1) : parts;
+  let value = evalPart(list[0]);
+  for (let i = 1; i < list.length; i += 2) {
+    const op = list[i].v;
+    const rhs = evalPart(list[i + 1]);
+    if (op === '+') value = add(value, rhs);
+    else if (op === '−') value = sub(value, rhs);
+    else if (op === '·') value = mul(value, rhs);
+    else if (op === ':') value = div(value, rhs);
+    else throw new Error(`Neznámý operátor: ${op}`);
+  }
+  return value;
+}
+
+test('plainText: složené zlomky mají jednoznačný textový zápis', () => {
+  assert.equal(plainText([compound([frac(2, 3)], [text('4')]), text('=')]), '(2/3)/(4) =');
+  assert.equal(plainText([compound([text('4')], [frac(2, 3)]), text('=')]), '(4)/(2/3) =');
+  assert.equal(plainText([compound([frac(1, 2), text('+'), frac(1, 3)], [frac(5, 6)]), text('=')]), '(1/2 + 1/3)/(5/6) =');
+});
+
+test('multiply: kladné výsledky v základním tvaru, křížové krácení a tvary podle úrovně 1–5', () => {
+  let l3WholeFirst = 0;
+  let l3FracFirst = 0;
+  let l3Cross = 0;
+  let l4MixedFirst = 0;
+  let l4FracFirst = 0;
+  let l4Triple = 0;
+  let l5TwoMixed = 0;
+  let l5TripleCross = 0;
+  forEachLevel('multiply', 340, (item, level) => {
+    const p = item.display.prompt;
+    assert.equal(p.at(-1).v, '=');
+    const value = evalParts(p);
+    assert.ok(item.expected.n > 0 && item.expected.d > 0);
+    assert.equal(gcd(item.expected.n, item.expected.d), 1);
+    assert.ok(equalsValue(value, item.expected), item.id);
+    assert.ok(item.display.steps.length > 0);
+    if (level === 1) {
+      assert.equal(p.length, 4);
+      assert.ok(p[0].t === 'frac' && p[2].t === 'frac' && p[0].d <= 9 && p[2].d <= 9);
+    } else if (level === 2) {
+      assert.equal(p.length, 4);
+      assert.ok(gcd(p[0].n, p[2].d) > 1 || gcd(p[2].n, p[0].d) > 1, item.id);
+    } else if (level === 3) {
+      if (p[0].t === 'text') l3WholeFirst++;
+      else if (p[2].t === 'text') l3FracFirst++;
+      else {
+        l3Cross++;
+        assert.ok(gcd(p[0].n, p[2].d) > 1 || gcd(p[2].n, p[0].d) > 1, item.id);
+      }
+    } else if (level === 4) {
+      if (p.length === 6) l4Triple++;
+      else if (p[0].t === 'mixed') l4MixedFirst++;
+      else if (p[2].t === 'mixed') l4FracFirst++;
+    } else if (level === 5) {
+      if (p.length === 6) {
+        l5TripleCross++;
+        const fr = [p[0], p[2], p[4]];
+        const hasCross = fr.some((a, i) => fr.some((b, j) => i !== j && gcd(a.n, b.d) > 1));
+        assert.ok(hasCross, item.id);
+      } else {
+        assert.ok(p[0].t === 'mixed' && p[2].t === 'mixed');
+        l5TwoMixed++;
+      }
+    }
+  });
+  assert.ok(l3WholeFirst > 0 && l3FracFirst > 0 && l3Cross > 0);
+  assert.ok(l4MixedFirst > 0 && l4FracFirst > 0 && l4Triple > 0);
+  assert.ok(l5TwoMixed > 0 && l5TripleCross > 0);
+});
+
+test('divide: kladné výsledky v základním tvaru, křížové krácení po převrácení a tvary podle úrovně 1–5', () => {
+  let l3FracDivWhole = 0;
+  let l3WholeDivFrac = 0;
+  let l4MixedDivFrac = 0;
+  let l4FracDivMixed = 0;
+  forEachLevel('divide', 350, (item, level) => {
+    const p = item.display.prompt;
+    assert.equal(p.length, 4);
+    assert.equal(p[1].v, ':');
+    assert.equal(p[3].v, '=');
+    const value = evalParts(p);
+    assert.ok(item.expected.n > 0 && item.expected.d > 0);
+    assert.equal(gcd(item.expected.n, item.expected.d), 1);
+    assert.ok(equalsValue(value, item.expected), item.id);
+    assert.ok(item.display.steps.length > 0);
+    if (level === 1) {
+      assert.ok(p[0].t === 'frac' && p[2].t === 'frac' && p[0].d <= 9 && p[2].d <= 9);
+    } else if (level === 2) {
+      assert.ok(p[0].t === 'frac' && p[2].t === 'frac');
+      assert.ok(gcd(p[0].n, p[2].n) > 1 || gcd(p[0].d, p[2].d) > 1, item.id);
+    } else if (level === 3) {
+      if (p[0].t === 'frac' && p[2].t === 'text') l3FracDivWhole++;
+      else if (p[0].t === 'text' && p[2].t === 'frac') l3WholeDivFrac++;
+      else assert.fail(`Nečekaný tvar na L3: ${item.id}`);
+    } else if (level === 4) {
+      if (p[0].t === 'mixed' && p[2].t === 'frac') l4MixedDivFrac++;
+      else if (p[0].t === 'frac' && p[2].t === 'mixed') l4FracDivMixed++;
+      else assert.fail(`Nečekaný tvar na L4: ${item.id}`);
+    } else if (level === 5) {
+      assert.ok(p[0].t === 'mixed' && p[2].t === 'mixed');
+    }
+  });
+  assert.ok(l3FracDivWhole > 0 && l3WholeDivFrac > 0);
+  assert.ok(l4MixedDivFrac > 0 && l4FracDivMixed > 0);
+});
+
+test('compound: uzel compound, kladné mezivýsledky, přesná hodnota a rozumné meze pro úrovně 1–5', () => {
+  assert.ok(category('compound').hint.example.some((p) => p.t === 'compound'));
+  let l1FracTop = 0;
+  let l1WholeTop = 0;
+  let l3Cross = 0;
+  let l3Mixed = 0;
+  let l4OpTop = 0;
+  let l4OpBot = 0;
+  let l5BothOps = 0;
+  let l5OneOp = 0;
+  forEachLevel('compound', 360, (item, level) => {
+    const p = item.display.prompt;
+    assert.equal(p.length, 2);
+    assert.equal(p[0].t, 'compound');
+    assert.equal(p[1].v, '=');
+    const numVal = evalParts(p[0].n);
+    const denVal = evalParts(p[0].d);
+    assert.ok(numVal.n > 0 && numVal.d > 0, `kladný čitatel: ${item.id}`);
+    assert.ok(denVal.n > 0 && denVal.d > 0, `kladný jmenovatel: ${item.id}`);
+    const value = div(numVal, denVal);
+    assert.ok(item.expected.n > 0 && item.expected.d > 0);
+    assert.equal(gcd(item.expected.n, item.expected.d), 1);
+    assert.ok(equalsValue(value, item.expected), item.id);
+    assert.ok(item.expected.n <= 500 && item.expected.d <= 500, `rozumná velikost: ${item.id}`);
+    assert.ok(item.display.steps.length > 0);
+    if (level === 1) {
+      if (p[0].n[0].t === 'frac' && p[0].d[0].t === 'text') l1FracTop++;
+      else if (p[0].n[0].t === 'text' && p[0].d[0].t === 'frac') l1WholeTop++;
+      else assert.fail(`Nečekaný tvar na L1: ${item.id}`);
+    } else if (level === 2) {
+      assert.ok(p[0].n.length === 1 && p[0].d.length === 1 && p[0].n[0].t === 'frac' && p[0].d[0].t === 'frac');
+      assert.ok(p[0].n[0].d <= 9 && p[0].d[0].d <= 9);
+    } else if (level === 3) {
+      if (p[0].n[0].t === 'mixed' || p[0].d[0].t === 'mixed') l3Mixed++;
+      else {
+        l3Cross++;
+        assert.ok(gcd(p[0].n[0].n, p[0].d[0].n) > 1 || gcd(p[0].n[0].d, p[0].d[0].d) > 1, item.id);
+      }
+    } else if (level === 4) {
+      if (p[0].n.length === 3) l4OpTop++;
+      if (p[0].d.length === 3) l4OpBot++;
+      assert.equal(p[0].n.length === 3, p[0].d.length === 1);
+    } else if (level === 5) {
+      if (p[0].n.length === 3 && p[0].d.length === 3) l5BothOps++;
+      else if (p[0].n.length === 3 || p[0].d.length === 3) l5OneOp++;
+      else assert.fail(`Nečekaný tvar na L5: ${item.id}`);
+    }
+  });
+  assert.ok(l1FracTop > 0 && l1WholeTop > 0);
+  assert.ok(l3Cross > 0 && l3Mixed > 0);
+  assert.ok(l4OpTop > 0 && l4OpBot > 0);
+  assert.ok(l5BothOps > 0 && l5OneOp > 0);
+});
+
+test('multiply, divide a compound: stejný seed dá stejné položky', () => {
+  for (const id of ['multiply', 'divide', 'compound']) {
+    const run = () => LEVELS.flatMap((level) => {
+      const rng = seeded(555);
+      return Array.from({ length: 50 }, () => category(id).generate(rng, level).id);
+    });
+    assert.deepEqual(run(), run());
+  }
 });

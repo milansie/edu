@@ -2,10 +2,11 @@ import { gcd, lcm, reduce } from '../../../js/core/fraction.js';
 
 /**
  * Pomocné funkce generátorů. Části zápisu (`parts`) popisují vykreslitelný výraz:
- * `{ t: 'frac', n, d } | { t: 'mixed', w, n, d } | { t: 'text', v }`.
+ * `{ t: 'frac', n, d } | { t: 'mixed', w, n, d } | { t: 'compound', n, d } | { t: 'text', v }`.
  */
 export const frac = (n, d) => ({ t: 'frac', n, d });
 export const mixed = (w, n, d) => ({ t: 'mixed', w, n, d });
+export const compound = (n, d) => ({ t: 'compound', n, d });
 export const text = (v) => ({ t: 'text', v });
 
 /** Zápis jako prostý text ("3/4 (· 4) ="), pro `aria-label` a výpis chyb bez rendereru. */
@@ -14,6 +15,7 @@ export function plainText(parts) {
     .map((p) => {
       if (p.t === 'frac') return `${p.n}/${p.d}`;
       if (p.t === 'mixed') return `${p.w} ${p.n}/${p.d}`;
+      if (p.t === 'compound') return `(${plainText(p.n)})/(${plainText(p.d)})`;
       return p.v;
     })
     .join(' ');
@@ -61,6 +63,40 @@ export function valueResult(n, d) {
     answer = [frac(expected.n, expected.d)];
   }
   return { expected, answer, steps };
+}
+
+/**
+ * Výsledek a kroky násobení dvou kladných zlomků `a · b` (s křížovým krácením, když jde krátit).
+ * Vrací `{ expected, answer, steps }` připravené pro `makeItem`.
+ */
+export function multiplyResult(a, b) {
+  const g1 = gcd(a.n, b.d);
+  const g2 = gcd(b.n, a.d);
+  const a1 = a.n / g1;
+  const d1 = b.d / g1;
+  const b1 = b.n / g2;
+  const c1 = a.d / g2;
+  const num = a1 * b1;
+  const den = c1 * d1;
+  const res = valueResult(num, den);
+  const steps = [];
+  if (g1 > 1 || g2 > 1) {
+    steps.push(`Krátíme křížem: ${a.n}/${a.d} · ${b.n}/${b.d} = ${a1}/${c1} · ${b1}/${d1}`);
+  }
+  const prod = den === 1 ? String(num) : `${num}/${den}`;
+  steps.push(`(${a1} · ${b1})/(${c1} · ${d1}) = ${prod}`);
+  steps.push(...res.steps);
+  return { expected: res.expected, answer: res.answer, steps };
+}
+
+/** Vlastní zlomek v základním tvaru se jmenovatelem ≤ `maxD`, jehož čitatel je násobkem `k` (k ≥ 2, maxD > k). */
+export function fracWithNumeratorFactor(rng, k, maxD) {
+  const denominators = [];
+  for (let d = k + 1; d <= maxD; d++) if (gcd(d, k) === 1) denominators.push(d);
+  const d = pick(rng, denominators);
+  const multiples = [];
+  for (let p = 1; p * k < d; p++) if (gcd(p, d) === 1) multiples.push(p * k);
+  return { n: pick(rng, multiples), d };
 }
 
 /**
